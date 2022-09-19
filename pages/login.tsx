@@ -23,7 +23,10 @@ const Login: NextPage = () => {
                 <hr className="text-light-gray my-4" />
                 <div className="flex justify-center">
                     <p>
-                        Don&apos;t have an account? <Link href="/signup">Sign up</Link>
+                        Don&apos;t have an account?{' '}
+                        <Link className="text-blue font-bold" href="/signup">
+                            Sign up
+                        </Link>
                     </p>
                 </div>
             </Card>

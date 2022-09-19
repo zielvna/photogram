@@ -5,15 +5,12 @@ import NextLink from 'next/link';
 type Props = {
     href: string;
     children: string;
-    className?: string;
     [props: string]: any;
 };
 
-const Link = ({ href, children, className = '', ...props }: Props) => (
+const Link = ({ href, children, ...props }: Props) => (
     <NextLink href={href}>
-        <a className={`text-blue font-bold ${className}`} {...props}>
-            {children}
-        </a>
+        <a {...props}>{children}</a>
     </NextLink>
 );
 

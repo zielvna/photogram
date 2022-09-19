@@ -1,5 +1,7 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
+import classnames from 'classnames';
+
 type Props = {
     children: React.ReactNode;
     className?: string;
@@ -7,7 +9,7 @@ type Props = {
 };
 
 const Card = ({ children, className = '', ...props }: Props) => (
-    <div className={`p-4 bg-white rounded-lg ${className}`} {...props}>
+    <div className={classnames('p-4 bg-white rounded-lg', className)} {...props}>
         {children}
     </div>
 );

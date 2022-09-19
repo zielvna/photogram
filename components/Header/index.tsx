@@ -32,13 +32,9 @@ const Header = () => {
                     className={classnames('flex items-center md:w-80 md:relative', { 'w-full': isSearchOpen })}
                     ref={ref}
                 >
-                    <Input
-                        className={classnames('w-full md:block', { hidden: !isSearchOpen })}
-                        name="search"
-                        placeholder="Search"
-                        spellCheck="false"
-                        onClick={openSearch}
-                    />
+                    <div className={classnames('w-full md:block', { hidden: !isSearchOpen })}>
+                        <Input name="search" placeholder="Search" spellCheck="false" onClick={openSearch} />
+                    </div>
                     <RiCloseLine
                         className={classnames('ml-2 text-3xl text-black shrink-0 cursor-pointer md:hidden', {
                             hidden: !isSearchOpen,

@@ -1,20 +1,17 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
-import classnames from 'classnames';
-
 type Props = {
     scheme?: 'normal' | 'small';
     children: React.ReactNode;
-    className?: string;
     [props: string]: any;
 };
 
-const Button = ({ children, scheme = 'normal', className = '', ...props }: Props) => {
+const Button = ({ children, scheme = 'normal', ...props }: Props) => {
     const buttonStyles =
-        scheme === 'normal' ? 'py-2 px-8 bg-blue text-white font-bold rounded-lg' : 'text-blue font-bold';
+        scheme === 'normal' ? 'w-full py-2 bg-blue text-white font-bold rounded-lg' : 'text-blue font-bold';
 
     return (
-        <button className={classnames(buttonStyles, className)} {...props}>
+        <button className={buttonStyles} {...props}>
             {children}
         </button>
     );

@@ -24,7 +24,7 @@ const Header = () => {
 
     return (
         <header className="h-16 flex justify-center bg-white">
-            <div className="w-full max-w-5xl px-2 flex items-center justify-between">
+            <div className="w-full max-w-5xl px-4 flex items-center justify-between">
                 <div className={classnames('w-44', { 'hidden md:block': isSearchOpen })}>
                     <RiCamera2Line className="text-3xl text-black cursor-pointer" />
                 </div>

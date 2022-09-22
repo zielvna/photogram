@@ -16,9 +16,6 @@ module.exports = {
             gridTemplateColumns: {
                 posts: 'repeat(auto-fill, minmax(240px, 1fr))',
             },
-            maxWidth: {
-                32: '8rem',
-            },
         },
     },
     plugins: [],

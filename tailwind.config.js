@@ -13,6 +13,12 @@ module.exports = {
                 'light-gray': '#f8f8f8',
                 white: '#ffffff',
             },
+            gridTemplateColumns: {
+                posts: 'repeat(auto-fill, minmax(240px, 1fr))',
+            },
+            maxWidth: {
+                32: '8rem',
+            },
         },
     },
     plugins: [],

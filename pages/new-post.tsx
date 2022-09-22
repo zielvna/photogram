@@ -32,7 +32,7 @@ const NewPostPage: NextPage = () => {
                                 />
                             </div>
                             <div className="w-full mt-4 shrink-0 md:w-80 md:mt-0 md:pl-4">
-                                <Textarea name="bio" rows="5" placeholder="Bio" />
+                                <Textarea name="comment" rows="5" placeholder="Comment" spellCheck="false" />
                                 <p className="text-xs text-gray">0/300</p>
                             </div>
                         </div>

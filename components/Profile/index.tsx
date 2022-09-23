@@ -22,7 +22,7 @@ const Profile = () => (
                     </p>
                 </div>
                 <p className="mt-4">profile description</p>
-                <div className="max-w-32 mt-4">
+                <div className="w-32 mt-4">
                     <Button>Follow</Button>
                 </div>
             </div>

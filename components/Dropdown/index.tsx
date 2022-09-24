@@ -16,7 +16,7 @@ const Dropdown = ({ show, items, passRef, onChange }: Props) => {
     return (
         <div
             className={classnames(
-                'bg-black/50 px-4 pb-4 flex absolute inset-0 md:bg-transparent md:px-0 md:pb-0 md:inset-auto md:right-0',
+                'bg-black/50 px-4 pb-4 flex fixed inset-0 z-10 md:bg-transparent md:px-0 md:pb-0 md:absolute md:inset-auto md:right-0',
                 { hidden: !show }
             )}
         >

@@ -4,7 +4,7 @@ import NextLink from 'next/link';
 
 type Props = {
     href: string;
-    children: string;
+    children: React.ReactNode;
     [props: string]: any;
 };
 

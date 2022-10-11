@@ -4,13 +4,19 @@ import { UseFormRegister, FieldValues } from 'react-hook-form';
 
 type Props = {
     name: string;
-    register: UseFormRegister<FieldValues>;
+    register?: UseFormRegister<FieldValues>;
     validation?: object;
     [props: string]: any;
 };
 
-const Input = ({ name, register, validation = {}, ...props }: Props) => (
-    <input className="w-full p-2 bg-light-gray rounded-lg outline-0" {...register(name, validation)} {...props} />
-);
+const Input = ({ name, register, validation = {}, ...props }: Props) => {
+    let inputFormProps;
+
+    if (register) {
+        inputFormProps = { ...register(name, validation) };
+    }
+
+    return <input className="w-full p-2 bg-light-gray rounded-lg outline-0" {...inputFormProps} {...props} />;
+};
 
 export default Input;

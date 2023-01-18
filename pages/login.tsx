@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
 
 import { signIn } from '../functions';
-import useAuth from '../hooks/useUser';
+import useUser from '../hooks/useUser';
 import Wrapper from '../components/Wrapper';
 import Card from '../components/Card';
 import Input from '../components/Input';
@@ -21,7 +21,7 @@ const LogIn: NextPage = () => {
         formState: { errors },
     } = useForm();
     const router = useRouter();
-    const user = useAuth();
+    const user = useUser();
     const [error, setError] = useState('');
 
     const registerOptions = {

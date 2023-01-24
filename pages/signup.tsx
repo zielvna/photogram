@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RiCamera2Line } from 'react-icons/ri';
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
@@ -54,9 +54,11 @@ const SignUp: NextPage = () => {
         }
     });
 
-    if (user) {
-        router.push('/');
-    }
+    useEffect(() => {
+        if (user) {
+            router.push('/');
+        }
+    }, [user]);
 
     return (
         <Wrapper>

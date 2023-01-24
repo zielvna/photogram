@@ -5,17 +5,26 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
 import IPost from '../types/Post';
+import IUser from '../types/User';
 
 export const signUp = async (username: string, email: string, password: string) => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
     await updateProfile(user, { displayName: username });
 
-    await setDoc(doc(db, 'users', user.uid), {});
+    await setDoc(doc(db, 'users', user.uid), {
+        username,
+    });
 };
 
 export const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
+};
+
+export const getUser = async (userId: string) => {
+    const user = await getDoc(doc(db, 'users', userId));
+
+    return user.data() as IUser;
 };
 
 export const createPost = async (photo: File, description: string) => {
@@ -34,6 +43,7 @@ export const createPost = async (photo: File, description: string) => {
         userId: uid,
         photoUrl: photoUrl,
         description: description,
+        timestamp: Date.now(),
     });
 
     return id;

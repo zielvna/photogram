@@ -24,7 +24,13 @@ export const signIn = async (email: string, password: string) => {
 export const getUser = async (userId: string) => {
     const user = await getDoc(doc(db, 'users', userId));
 
-    return user.data() as IUser;
+    const userData = user.data();
+
+    if (userData) {
+        userData.id = userId;
+    }
+
+    return userData as IUser;
 };
 
 export const createPost = async (photo: File, description: string) => {
@@ -52,5 +58,11 @@ export const createPost = async (photo: File, description: string) => {
 export const getPost = async (postId: string) => {
     const post = await getDoc(doc(db, 'posts', postId));
 
-    return post.data() as IPost;
+    const postData = post.data();
+
+    if (postData) {
+        postData.id = postId;
+    }
+
+    return postData as IPost;
 };

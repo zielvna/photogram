@@ -1,6 +1,6 @@
 import { auth, db, storage } from '../firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { setDoc, getDoc, doc, collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { setDoc, getDoc, doc, collection, query, where, getDocs, orderBy, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
@@ -104,4 +104,53 @@ export const getComments = async (postId: string) => {
     }
 
     return commentsData;
+};
+
+export const like = async (postId: string, status: boolean) => {
+    const uid = auth.currentUser?.uid;
+
+    const likesRef = collection(db, 'likes');
+    const q = query(likesRef, where('postId', '==', postId), where('userId', '==', uid));
+
+    const likes = await getDocs(q);
+
+    let likeId = null;
+
+    likes.forEach(async (like) => {
+        likeId = like.id;
+    });
+
+    if (likeId) {
+        await updateDoc(doc(db, 'likes', likeId), {
+            status,
+        });
+    } else {
+        const id = v4();
+
+        await setDoc(doc(db, 'likes', id), {
+            postId,
+            userId: uid,
+            status,
+        });
+    }
+};
+
+export const isLiked = async (postId: string) => {
+    const uid = auth.currentUser?.uid;
+
+    const likesRef = collection(db, 'likes');
+    const q = query(likesRef, where('postId', '==', postId), where('userId', '==', uid), where('status', '==', true));
+
+    const likes = await getDocs(q);
+
+    return likes.size ? true : false;
+};
+
+export const getLikes = async (postId: string) => {
+    const likesRef = collection(db, 'likes');
+    const q = query(likesRef, where('postId', '==', postId), where('status', '==', true));
+
+    const likes = await getDocs(q);
+
+    return likes.size;
 };

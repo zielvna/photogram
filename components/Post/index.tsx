@@ -1,10 +1,11 @@
 import NextImage from 'next/future/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
 
-import { createComment, getComments } from '../../functions';
+import { createComment, getComments, getLikes, isLiked, like } from '../../functions';
+import useUser from '../../hooks/useUser';
 import IPost from '../../types/Post';
 import IUser from '../../types/User';
 import Card from '../Card';
@@ -20,18 +21,23 @@ type Props = {
     post: IPost;
     author: IUser;
     comments: IComment[];
+    likeCount: number;
     scheme: 'normal' | 'preview';
 };
 
-const Post = ({ post, author, comments, scheme = 'normal' }: Props) => {
+const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) => {
     const {
         register,
         handleSubmit,
         reset,
+        setFocus,
         formState: { errors },
     } = useForm();
+    const user = useUser();
     const [error, setError] = useState('');
     const [postComments, setPostComments] = useState(comments);
+    const [isPostLiked, setIsPostLiked] = useState(false);
+    const [postLikeCount, setPostLikeCount] = useState(likeCount);
 
     const registerOptions = {
         comment: {
@@ -65,6 +71,34 @@ const Post = ({ post, author, comments, scheme = 'normal' }: Props) => {
         ));
     };
 
+    const likeClick = async () => {
+        try {
+            await like(post.id, !isPostLiked);
+            checkIfPostIsLiked();
+        } catch (error) {
+            if (error instanceof FirebaseError) {
+                setError(error.message);
+            }
+        }
+    };
+
+    const commentClick = () => {
+        setFocus('comment');
+    };
+
+    const checkIfPostIsLiked = async () => {
+        const liked = await isLiked(post.id);
+        setIsPostLiked(liked);
+        const likeCount = await getLikes(post.id);
+        setPostLikeCount(likeCount);
+    };
+
+    useEffect(() => {
+        if (user) {
+            checkIfPostIsLiked();
+        }
+    }, [user]);
+
     return (
         <Card>
             <div className={classnames({ 'md:flex': scheme === 'normal' })}>
@@ -82,7 +116,13 @@ const Post = ({ post, author, comments, scheme = 'normal' }: Props) => {
                         </div>
                         <div className="grow overflow-y-scroll max-h-80 md:h-0 md:max-h-max">{generateComments()}</div>
                         <hr className="text-light-gray my-4" />
-                        <PostActions />
+                        <PostActions
+                            likes={postLikeCount}
+                            comments={postComments.length}
+                            isLiked={isPostLiked}
+                            onLikeClick={likeClick}
+                            onCommentClick={commentClick}
+                        />
                         <hr className="text-light-gray my-4" />
                         <form onSubmit={onSubmit}>
                             <div className="flex items-center">
@@ -90,7 +130,9 @@ const Post = ({ post, author, comments, scheme = 'normal' }: Props) => {
                                     name="comment"
                                     register={register}
                                     validation={registerOptions.comment}
+                                    type="text"
                                     placeholder="Add a comment..."
+                                    autoComplete="off"
                                 />
                                 <div className="ml-2">
                                     <Button scheme="small">Post</Button>
@@ -105,7 +147,13 @@ const Post = ({ post, author, comments, scheme = 'normal' }: Props) => {
                 )}
                 {scheme === 'preview' && (
                     <div className="mt-4">
-                        <PostActions />
+                        <PostActions
+                            likes={postLikeCount}
+                            isLiked={isPostLiked}
+                            onLikeClick={likeClick}
+                            comments={postComments.length}
+                            onCommentClick={commentClick}
+                        />
                     </div>
                 )}
             </div>

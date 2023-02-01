@@ -1,6 +1,17 @@
 import { auth, db, storage } from '../firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { setDoc, getDoc, doc, collection, query, where, getDocs, orderBy, updateDoc } from 'firebase/firestore';
+import {
+    setDoc,
+    getDoc,
+    doc,
+    collection,
+    query,
+    where,
+    getDocs,
+    orderBy,
+    updateDoc,
+    deleteDoc,
+} from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
@@ -66,6 +77,10 @@ export const getPost = async (postId: string) => {
     }
 
     return postData as IPost;
+};
+
+export const deletePost = async (postId: string) => {
+    await deleteDoc(doc(db, 'posts', postId));
 };
 
 export const createComment = async (postId: string, content: string) => {

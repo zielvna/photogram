@@ -9,14 +9,26 @@ import Post from '../../components/Post';
 import IComment from '../../types/Comment';
 
 export const getServerSideProps: GetServerSideProps<{
-    post: IPost;
-    author: IUser;
-    comments: IComment[];
-    likeCount: number;
+    post: IPost | null;
+    author: IUser | null;
+    comments: IComment[] | null;
+    likeCount: number | null;
 }> = async (context) => {
     const postId = context.params?.postId;
 
     const post = await getPost(postId as string);
+
+    if (!post) {
+        return {
+            props: {
+                post: null,
+                author: null,
+                comments: null,
+                likeCount: null,
+            },
+        };
+    }
+
     const author = await getUser(post.userId);
     const comments = await getComments(postId as string);
     const likeCount = await getLikes(postId as string);
@@ -36,7 +48,7 @@ const PostPage = ({ post, author, comments, likeCount }: InferGetServerSideProps
         <Header />
         <Wrapper>
             <div className="mt-4">
-                {post ? (
+                {post && author && comments !== null && likeCount !== null ? (
                     <Post post={post} author={author} comments={comments} likeCount={likeCount} scheme="normal" />
                 ) : (
                     <p>Post not found.</p>

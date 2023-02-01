@@ -1,10 +1,11 @@
 import NextImage from 'next/future/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
+import { RiMoreLine } from 'react-icons/ri';
 
-import { createComment, getComments, getLikes, isLiked, like } from '../../functions';
+import { deletePost, createComment, getComments, getLikes, isLiked, like } from '../../functions';
 import useUser from '../../hooks/useUser';
 import IPost from '../../types/Post';
 import IUser from '../../types/User';
@@ -16,6 +17,9 @@ import Input from '../Input';
 import InputError from '../Input/InputError';
 import Button from '../Button';
 import IComment from '../../types/Comment';
+import Dropdown from '../Dropdown';
+import useDropdown from '../../hooks/useDropdown';
+import { useRouter } from 'next/router';
 
 type Props = {
     post: IPost;
@@ -34,6 +38,9 @@ const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) =
         formState: { errors },
     } = useForm();
     const user = useUser();
+    const router = useRouter();
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
     const [error, setError] = useState('');
     const [postComments, setPostComments] = useState(comments);
     const [isPostLiked, setIsPostLiked] = useState(false);
@@ -93,17 +100,47 @@ const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) =
         setPostLikeCount(likeCount);
     };
 
+    function handleChange(name: string) {
+        switch (name) {
+            case 'Remove':
+                deletePost(post.id);
+                router.push('/');
+        }
+
+        closeDropdown();
+    }
+
     useEffect(() => {
         if (user) {
             checkIfPostIsLiked();
         }
     }, [user]);
 
+    const description = (
+        <>
+            <PostDescription user={author} content={post.description} timestamp={post.timestamp} />
+            <div className="md:relative">
+                <RiMoreLine className="text-3xl text-black cursor-pointer" onClick={openDropdown} />
+                <Dropdown show={isDropdownOpen} items={['Remove']} onChange={handleChange} passRef={dropdownRef} />
+            </div>
+        </>
+    );
+
+    const actions = (
+        <PostActions
+            likes={postLikeCount}
+            isLiked={isPostLiked}
+            onLikeClick={likeClick}
+            comments={postComments.length}
+            onCommentClick={commentClick}
+        />
+    );
+
     return (
         <Card>
             <div className={classnames({ 'md:flex': scheme === 'normal' })}>
-                <div className={classnames({ 'md:hidden': scheme === 'normal' })}>
-                    <PostDescription user={author} content={post.description} timestamp={post.timestamp} />
+                <div className={classnames('flex justify-between items-center', { 'md:hidden': scheme === 'normal' })}>
+                    {description}
                 </div>
                 <div className={classnames('mt-4', { 'md:mt-0': scheme === 'normal' })}>
                     <NextImage className="rounded-lg" src={post.photoUrl} width="640" height="640" alt="Post image." />
@@ -111,18 +148,12 @@ const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) =
                 {scheme === 'normal' && (
                     <div className="mt-4 flex flex-col justify-between shrink-0 md:w-80 md:mt-0 md:pl-4">
                         <div className="hidden md:block">
-                            <PostDescription user={author} content={post.description} timestamp={post.timestamp} />
+                            <div className="flex justify-between items-center">{description}</div>
                             <hr className="text-light-gray my-4" />
                         </div>
                         <div className="grow overflow-y-scroll max-h-80 md:h-0 md:max-h-max">{generateComments()}</div>
                         <hr className="text-light-gray my-4" />
-                        <PostActions
-                            likes={postLikeCount}
-                            comments={postComments.length}
-                            isLiked={isPostLiked}
-                            onLikeClick={likeClick}
-                            onCommentClick={commentClick}
-                        />
+                        {actions}
                         <hr className="text-light-gray my-4" />
                         <form onSubmit={onSubmit}>
                             <div className="flex items-center">
@@ -145,17 +176,7 @@ const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) =
                         </form>
                     </div>
                 )}
-                {scheme === 'preview' && (
-                    <div className="mt-4">
-                        <PostActions
-                            likes={postLikeCount}
-                            isLiked={isPostLiked}
-                            onLikeClick={likeClick}
-                            comments={postComments.length}
-                            onCommentClick={commentClick}
-                        />
-                    </div>
-                )}
+                {scheme === 'preview' && <div className="mt-4">{actions}</div>}
             </div>
         </Card>
     );

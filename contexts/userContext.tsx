@@ -1,5 +1,6 @@
 import { useState, useEffect, createContext } from 'react';
-import { User as FirebaseUser, onAuthStateChanged } from 'firebase/auth';
+import { User as FirebaseUser, onIdTokenChanged } from 'firebase/auth';
+import nookies from 'nookies';
 
 import { auth } from '../firebase';
 
@@ -15,8 +16,15 @@ export const UserProvider = ({ children }: Props) => {
     const [user, setUser] = useState<User>();
 
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        onIdTokenChanged(auth, async (user) => {
             setUser(user);
+
+            if (user) {
+                const token = await user.getIdToken();
+                nookies.set(undefined, 'token', token, { path: '/' });
+            } else {
+                nookies.destroy(undefined, 'token', { path: '/' });
+            }
         });
     }, []);
 

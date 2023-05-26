@@ -193,3 +193,64 @@ export const getUserStats = async (userId: string) => {
 export const deleteComment = async (commentId: string) => {
     await deleteDoc(doc(db, 'comments', commentId));
 };
+
+export const follow = async (userId: string, status: boolean) => {
+    const uid = auth.currentUser?.uid;
+
+    const followsRef = collection(db, 'follows');
+    const q = query(followsRef, where('userId', '==', userId), where('followerId', '==', uid));
+
+    const follows = await getDocs(q);
+
+    let followId = null;
+
+    follows.forEach(async (follow) => {
+        followId = follow.id;
+    });
+
+    if (followId) {
+        await updateDoc(doc(db, 'follows', followId), {
+            status,
+        });
+    } else {
+        const id = v4();
+
+        await setDoc(doc(db, 'follows', id), {
+            userId,
+            followerId: uid,
+            status,
+        });
+    }
+};
+
+export const isFollowed = async (userId: string, followerId: string) => {
+    const followsRef = collection(db, 'follows');
+    const q = query(
+        followsRef,
+        where('userId', '==', userId),
+        where('followerId', '==', followerId),
+        where('status', '==', true)
+    );
+
+    const follows = await getDocs(q);
+
+    return follows.size ? true : false;
+};
+
+export const getFollowers = async (userId: string) => {
+    const followsRef = collection(db, 'follows');
+    const q = query(followsRef, where('userId', '==', userId), where('status', '==', true));
+
+    const follows = await getDocs(q);
+
+    return follows.size;
+};
+
+export const getFollows = async (userId: string) => {
+    const followsRef = collection(db, 'follows');
+    const q = query(followsRef, where('followerId', '==', userId), where('status', '==', true));
+
+    const follows = await getDocs(q);
+
+    return follows.size;
+};

@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import classnames from 'classnames';
 import { RiCamera2Line, RiCloseLine, RiSearchLine, RiHomeLine, RiAddBoxLine, RiUserLine } from 'react-icons/ri';
 
 import Link from '../Link';
+import useUser from '../../hooks/useUser';
 import useDropdown from '../../hooks/useDropdown';
 import useOnClickOutside from '../../hooks/useOnClickOutside';
 import Input from '../Input';
@@ -11,12 +12,13 @@ import Search from '../Search';
 import Dropdown from '../Dropdown';
 
 const Header = () => {
+    const user = useUser();
+    const router = useRouter();
     const searchRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
-
-    const router = useRouter();
+    const [menuItems, setMenuItems] = useState(['Login']);
 
     useOnClickOutside(searchRef, () => {
         setIsSearchOpen(false);
@@ -32,8 +34,11 @@ const Header = () => {
 
     function handleChange(name: string) {
         switch (name) {
+            case 'Login':
+                router.push('/login');
+                break;
             case 'Profile':
-                router.push('/user/user');
+                router.push(`/user/${user?.uid}`);
                 break;
             case 'Settings':
                 router.push('/settings/edit-profile');
@@ -42,6 +47,12 @@ const Header = () => {
 
         closeDropdown();
     }
+
+    useEffect(() => {
+        if (user) {
+            setMenuItems(['Profile', 'Settings', 'Logout']);
+        }
+    }, [user]);
 
     return (
         <header className="relative z-10">
@@ -77,14 +88,14 @@ const Header = () => {
                         <Link href="/">
                             <RiHomeLine className="mx-2 text-3xl text-black cursor-pointer" />
                         </Link>
-                        <Link href="/new-post">
+                        <Link href="/create-post">
                             <RiAddBoxLine className="mx-2 text-3xl text-black cursor-pointer" />
                         </Link>
                         <div className="md:relative">
                             <RiUserLine className="ml-2 text-3xl text-black cursor-pointer" onClick={openDropdown} />
                             <Dropdown
                                 show={isDropdownOpen}
-                                items={['Profile', 'Settings', 'Logout']}
+                                items={menuItems}
                                 onChange={handleChange}
                                 passRef={dropdownRef}
                             />

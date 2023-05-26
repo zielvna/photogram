@@ -179,7 +179,15 @@ export const getUserStats = async (userId: string) => {
 
     const posts = await getDocs(q);
 
-    return { postCount: posts.size };
+    const postsData: IPost[] = [];
+
+    posts.forEach(async (post) => {
+        const postData = post.data();
+        postData.id = post.id;
+        postsData.push(postData as IPost);
+    });
+
+    return { posts: postsData, postCount: posts.size };
 };
 
 export const deleteComment = async (commentId: string) => {

@@ -7,7 +7,7 @@ import IUser from '../../types/User';
 type Props = {
     user: IUser;
     content: string;
-    timestamp: string;
+    timestamp: number;
 };
 
 const PostDescription = ({ user, content, timestamp }: Props) => (

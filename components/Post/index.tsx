@@ -1,11 +1,11 @@
 import NextImage from 'next/future/image';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import classnames from 'classnames';
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
 import { RiMoreLine } from 'react-icons/ri';
 
-import { deletePost, createComment, getComments, getLikes, isLiked, like } from '../../functions';
+import { deletePost, createComment, getComments, getLikes, like } from '../../functions';
 import useUser from '../../hooks/useUser';
 import IPost from '../../types/Post';
 import IUser from '../../types/User';
@@ -22,14 +22,16 @@ import useDropdown from '../../hooks/useDropdown';
 import { useRouter } from 'next/router';
 
 type Props = {
+    userId: string | null;
     post: IPost;
     author: IUser;
     comments: IComment[];
     likeCount: number;
+    isLiked: boolean;
     scheme: 'normal' | 'preview';
 };
 
-const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) => {
+const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'normal' }: Props) => {
     const {
         register,
         handleSubmit,
@@ -43,7 +45,7 @@ const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) =
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
     const [error, setError] = useState('');
     const [postComments, setPostComments] = useState(comments);
-    const [isPostLiked, setIsPostLiked] = useState(false);
+    const [isPostLiked, setIsPostLiked] = useState(isLiked);
     const [postLikeCount, setPostLikeCount] = useState(likeCount);
 
     const registerOptions = {
@@ -57,47 +59,65 @@ const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) =
     };
 
     const onSubmit = handleSubmit(async (data) => {
-        const { comment } = data;
+        if (user) {
+            const { comment } = data;
 
-        try {
-            reset();
-            await createComment(post.id, comment);
-            setPostComments(await getComments(post.id));
-        } catch (error) {
-            if (error instanceof FirebaseError) {
-                setError(error.message);
+            try {
+                reset();
+                await createComment(post.id, comment);
+                setPostComments(await getComments(post.id));
+            } catch (error) {
+                if (error instanceof FirebaseError) {
+                    setError(error.message);
+                }
             }
+        } else {
+            router.push('/login');
         }
     });
+
+    const commentRemoved = async () => {
+        setPostComments(await getComments(post.id));
+    };
 
     const generateComments = () => {
         return postComments.map((comment, index) => (
             <div className={classnames({ 'mt-4': index != 0 })} key={comment.id}>
-                <PostComment user={comment.user} content={comment.content} timestamp={comment.timestamp} />
+                <PostComment
+                    id={comment.id}
+                    user={comment.user}
+                    content={comment.content}
+                    timestamp={comment.timestamp}
+                    addRemoveButton={userId === comment.userId}
+                    commentRemoved={commentRemoved}
+                />
             </div>
         ));
     };
 
     const likeClick = async () => {
-        try {
-            await like(post.id, !isPostLiked);
-            checkIfPostIsLiked();
-        } catch (error) {
-            if (error instanceof FirebaseError) {
-                setError(error.message);
+        if (user) {
+            try {
+                await like(post.id, !isPostLiked);
+                const likes = await getLikes(post.id);
+                setIsPostLiked(!isPostLiked);
+                setPostLikeCount(likes);
+            } catch (error) {
+                if (error instanceof FirebaseError) {
+                    setError(error.message);
+                }
             }
+        } else {
+            router.push('/login');
         }
     };
 
     const commentClick = () => {
-        setFocus('comment');
-    };
-
-    const checkIfPostIsLiked = async () => {
-        const liked = await isLiked(post.id);
-        setIsPostLiked(liked);
-        const likeCount = await getLikes(post.id);
-        setPostLikeCount(likeCount);
+        if (user) {
+            setFocus('comment');
+        } else {
+            router.push('/login');
+        }
     };
 
     function handleChange(name: string) {
@@ -110,19 +130,15 @@ const Post = ({ post, author, comments, likeCount, scheme = 'normal' }: Props) =
         closeDropdown();
     }
 
-    useEffect(() => {
-        if (user) {
-            checkIfPostIsLiked();
-        }
-    }, [user]);
-
     const description = (
         <>
             <PostDescription user={author} content={post.description} timestamp={post.timestamp} />
-            <div className="md:relative">
-                <RiMoreLine className="text-3xl text-black cursor-pointer" onClick={openDropdown} />
-                <Dropdown show={isDropdownOpen} items={['Remove']} onChange={handleChange} passRef={dropdownRef} />
-            </div>
+            {userId === author.id && (
+                <div className="md:relative">
+                    <RiMoreLine className="text-3xl text-black cursor-pointer" onClick={openDropdown} />
+                    <Dropdown show={isDropdownOpen} items={['Remove']} onChange={handleChange} passRef={dropdownRef} />
+                </div>
+            )}
         </>
     );
 

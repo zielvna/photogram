@@ -150,11 +150,14 @@ export const like = async (postId: string, status: boolean) => {
     }
 };
 
-export const isLiked = async (postId: string) => {
-    const uid = auth.currentUser?.uid;
-
+export const isLiked = async (userId: string, postId: string) => {
     const likesRef = collection(db, 'likes');
-    const q = query(likesRef, where('postId', '==', postId), where('userId', '==', uid), where('status', '==', true));
+    const q = query(
+        likesRef,
+        where('postId', '==', postId),
+        where('userId', '==', userId),
+        where('status', '==', true)
+    );
 
     const likes = await getDocs(q);
 
@@ -168,4 +171,17 @@ export const getLikes = async (postId: string) => {
     const likes = await getDocs(q);
 
     return likes.size;
+};
+
+export const getUserStats = async (userId: string) => {
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, where('userId', '==', userId));
+
+    const posts = await getDocs(q);
+
+    return { postCount: posts.size };
+};
+
+export const deleteComment = async (commentId: string) => {
+    await deleteDoc(doc(db, 'comments', commentId));
 };

@@ -11,6 +11,8 @@ import {
     orderBy,
     updateDoc,
     deleteDoc,
+    limit,
+    startAfter,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
@@ -67,18 +69,6 @@ export const createPost = async (photo: File, description: string) => {
     return id;
 };
 
-export const getPost = async (postId: string) => {
-    const post = await getDoc(doc(db, 'posts', postId));
-
-    const postData = post.data();
-
-    if (postData) {
-        postData.id = postId;
-    }
-
-    return postData as IPost;
-};
-
 export const deletePost = async (postId: string) => {
     await deleteDoc(doc(db, 'posts', postId));
 };
@@ -97,28 +87,6 @@ export const createComment = async (postId: string, content: string) => {
         content,
         timestamp: Date.now(),
     });
-};
-
-export const getComments = async (postId: string) => {
-    const commentsRef = collection(db, 'comments');
-    const q = query(commentsRef, where('postId', '==', postId), orderBy('timestamp', 'desc'));
-
-    const comments = await getDocs(q);
-
-    const commentsData: IComment[] = [];
-
-    comments.forEach(async (comment) => {
-        const commentData = comment.data();
-        commentData.id = comment.id;
-        commentsData.push(commentData as IComment);
-    });
-
-    for (let i = 0; i < commentsData.length; i++) {
-        const user = await getUser(commentsData[i].userId);
-        commentsData[i].user = user;
-    }
-
-    return commentsData;
 };
 
 export const like = async (postId: string, status: boolean) => {
@@ -148,29 +116,6 @@ export const like = async (postId: string, status: boolean) => {
             status,
         });
     }
-};
-
-export const isLiked = async (userId: string, postId: string) => {
-    const likesRef = collection(db, 'likes');
-    const q = query(
-        likesRef,
-        where('postId', '==', postId),
-        where('userId', '==', userId),
-        where('status', '==', true)
-    );
-
-    const likes = await getDocs(q);
-
-    return likes.size ? true : false;
-};
-
-export const getLikes = async (postId: string) => {
-    const likesRef = collection(db, 'likes');
-    const q = query(likesRef, where('postId', '==', postId), where('status', '==', true));
-
-    const likes = await getDocs(q);
-
-    return likes.size;
 };
 
 export const getUserStats = async (userId: string) => {
@@ -253,4 +198,134 @@ export const getFollows = async (userId: string) => {
     const follows = await getDocs(q);
 
     return follows.size;
+};
+
+export const getHomePagePosts = async (end: number, timestamp = 0) => {
+    const postsRef = collection(db, 'posts');
+
+    let q;
+
+    if (timestamp) {
+        q = query(postsRef, orderBy('timestamp', 'desc'), startAfter(timestamp), limit(end));
+    } else {
+        q = query(postsRef, orderBy('timestamp', 'desc'), limit(end));
+    }
+
+    const posts = await getDocs(q);
+
+    const postIds: string[] = [];
+
+    posts.forEach((post) => {
+        postIds.push(post.id);
+    });
+
+    return postIds;
+};
+
+export const getPostLikesNumber = async (postId: string) => {
+    const likesRef = collection(db, 'likes');
+    const q = query(likesRef, where('postId', '==', postId), where('status', '==', true));
+
+    const likes = await getDocs(q);
+
+    return likes.size;
+};
+
+export const getPostCommentsNumber = async (postId: string) => {
+    const commentsRef = collection(db, 'comments');
+    const q = query(commentsRef, where('postId', '==', postId));
+
+    const comments = await getDocs(q);
+
+    return comments.size;
+};
+
+export const getPostStats = async (postId: string) => {
+    const likesNumber = await getPostLikesNumber(postId);
+    const commentsNumber = await getPostCommentsNumber(postId);
+
+    return { likes: likesNumber, comments: commentsNumber };
+};
+
+export const isPostLiked = async (userId: string | null, postId: string) => {
+    if (userId) {
+        const likesRef = collection(db, 'likes');
+        const q = query(
+            likesRef,
+            where('postId', '==', postId),
+            where('userId', '==', userId),
+            where('status', '==', true)
+        );
+
+        const likes = await getDocs(q);
+
+        return likes.size ? true : false;
+    }
+
+    return false;
+};
+
+export const getPostComments = async (userId: string | null, postId: string) => {
+    const commentsRef = collection(db, 'comments');
+    const q = query(commentsRef, where('postId', '==', postId), orderBy('timestamp', 'desc'));
+
+    const comments = await getDocs(q);
+
+    const commentsData: IComment[] = [];
+
+    comments.forEach((comment) => {
+        const commentData = comment.data() as IComment;
+        commentData.id = comment.id;
+
+        if (userId === commentData.userId) {
+            commentData.isRemovable = true;
+        } else {
+            commentData.isRemovable = false;
+        }
+
+        commentsData.push(commentData);
+    });
+
+    for (let i = 0; i < commentsData.length; i++) {
+        const author = await getUser(commentsData[i].userId);
+        commentsData[i].author = author;
+    }
+
+    return commentsData;
+};
+
+export const getPost = async (
+    userId: string | null,
+    postId: string,
+    withAuthor: boolean,
+    withComments: boolean,
+    withIsLiked: boolean
+) => {
+    const post = await getDoc(doc(db, 'posts', postId));
+
+    const postData = post.data() as IPost;
+
+    postData.id = postId;
+
+    postData.stats = await getPostStats(postData.id);
+
+    if (userId === postData.userId) {
+        postData.isRemovable = true;
+    } else {
+        postData.isRemovable = false;
+    }
+
+    if (withAuthor) {
+        postData.author = await getUser(postData.userId);
+    }
+
+    if (withComments) {
+        postData.comments = await getPostComments(userId, postData.id);
+    }
+
+    if (withIsLiked) {
+        postData.isLiked = await isPostLiked(userId, postData.id);
+    }
+
+    return postData;
 };

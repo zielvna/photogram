@@ -23,7 +23,7 @@ const PostDescription = ({ user, content, timestamp }: Props) => (
                 <span> {content}</span>
             </p>
             <p className="mt-1 text-xs text-gray">
-                <span>{moment(new Date(timestamp)).fromNow()}</span>
+                <span title={moment(new Date(timestamp)).format()}>{moment(new Date(timestamp)).fromNow()}</span>
             </p>
         </div>
     </div>

@@ -1,14 +1,14 @@
 import NextImage from 'next/future/image';
-import { useState, useRef } from 'react';
+import { useRouter } from 'next/router';
+import { useState, useRef, useEffect } from 'react';
 import classnames from 'classnames';
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
 import { RiMoreLine } from 'react-icons/ri';
 
-import { deletePost, createComment, getComments, getLikes, like } from '../../functions';
+import { deletePost, createComment, like, getPostComments, getPostLikesNumber } from '../../functions';
 import useUser from '../../hooks/useUser';
 import IPost from '../../types/Post';
-import IUser from '../../types/User';
 import Card from '../Card';
 import PostDescription from './PostDescription';
 import PostComment from './PostComment';
@@ -16,22 +16,15 @@ import PostActions from './PostActions';
 import Input from '../Input';
 import InputError from '../Input/InputError';
 import Button from '../Button';
-import IComment from '../../types/Comment';
 import Dropdown from '../Dropdown';
 import useDropdown from '../../hooks/useDropdown';
-import { useRouter } from 'next/router';
 
 type Props = {
-    userId: string | null;
     post: IPost;
-    author: IUser;
-    comments: IComment[];
-    likeCount: number;
-    isLiked: boolean;
     scheme: 'normal' | 'preview';
 };
 
-const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'normal' }: Props) => {
+const Post = ({ post, scheme = 'normal' }: Props) => {
     const {
         register,
         handleSubmit,
@@ -44,9 +37,14 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
     const [error, setError] = useState('');
-    const [postComments, setPostComments] = useState(comments);
-    const [isPostLiked, setIsPostLiked] = useState(isLiked);
-    const [postLikeCount, setPostLikeCount] = useState(likeCount);
+    const [postComments, setPostComments] = useState(post.comments ?? []);
+    const [isPostLiked, setIsPostLiked] = useState(post.isLiked ?? false);
+    const [postLikeCount, setPostLikeCount] = useState(post.stats?.likes ?? 0);
+    const [postCommentCount, setPostCommentCount] = useState(post.stats?.comments ?? 0);
+
+    useEffect(() => {
+        setIsPostLiked(post.isLiked ?? false);
+    }, [post.isLiked]);
 
     const registerOptions = {
         comment: {
@@ -65,7 +63,7 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
             try {
                 reset();
                 await createComment(post.id, comment);
-                setPostComments(await getComments(post.id));
+                setPostComments(await getPostComments(user.uid, post.id));
             } catch (error) {
                 if (error instanceof FirebaseError) {
                     setError(error.message);
@@ -77,7 +75,8 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
     });
 
     const commentRemoved = async () => {
-        setPostComments(await getComments(post.id));
+        setPostComments(await getPostComments(user?.uid ?? null, post.id));
+        setPostCommentCount(postComments.length);
     };
 
     const generateComments = () => {
@@ -85,10 +84,10 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
             <div className={classnames({ 'mt-4': index != 0 })} key={comment.id}>
                 <PostComment
                     id={comment.id}
-                    user={comment.user}
+                    user={comment.author}
                     content={comment.content}
                     timestamp={comment.timestamp}
-                    addRemoveButton={userId === comment.userId}
+                    addRemoveButton={comment.isRemovable}
                     commentRemoved={commentRemoved}
                 />
             </div>
@@ -99,9 +98,10 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
         if (user) {
             try {
                 await like(post.id, !isPostLiked);
-                const likes = await getLikes(post.id);
+                const postLikesNumber = await getPostLikesNumber(post.id);
+
                 setIsPostLiked(!isPostLiked);
-                setPostLikeCount(likes);
+                setPostLikeCount(postLikesNumber);
             } catch (error) {
                 if (error instanceof FirebaseError) {
                     setError(error.message);
@@ -114,7 +114,11 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
 
     const commentClick = () => {
         if (user) {
-            setFocus('comment');
+            if (scheme === 'preview') {
+                router.push(`/post/${post.id}`);
+            } else {
+                setFocus('comment');
+            }
         } else {
             router.push('/login');
         }
@@ -130,16 +134,24 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
         closeDropdown();
     }
 
-    const description = (
+    function photoClick() {
+        if (scheme === 'preview') {
+            router.push(`/post/${post.id}`);
+        }
+    }
+
+    const description = post.author ? (
         <>
-            <PostDescription user={author} content={post.description} timestamp={post.timestamp} />
-            {userId === author.id && (
+            <PostDescription user={post.author} content={post.description} timestamp={post.timestamp} />
+            {post.isRemovable && (
                 <div className="md:relative">
                     <RiMoreLine className="text-3xl text-black cursor-pointer" onClick={openDropdown} />
                     <Dropdown show={isDropdownOpen} items={['Remove']} onChange={handleChange} passRef={dropdownRef} />
                 </div>
             )}
         </>
+    ) : (
+        <></>
     );
 
     const actions = (
@@ -147,7 +159,7 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
             likes={postLikeCount}
             isLiked={isPostLiked}
             onLikeClick={likeClick}
-            comments={postComments.length}
+            comments={postCommentCount}
             onCommentClick={commentClick}
         />
     );
@@ -158,7 +170,10 @@ const Post = ({ userId, post, author, comments, likeCount, isLiked, scheme = 'no
                 <div className={classnames('flex justify-between items-center', { 'md:hidden': scheme === 'normal' })}>
                     {description}
                 </div>
-                <div className={classnames('mt-4', { 'md:mt-0': scheme === 'normal' })}>
+                <div
+                    onClick={photoClick}
+                    className={classnames('mt-4 cursor-pointer', { 'md:mt-0': scheme === 'normal' })}
+                >
                     <NextImage className="rounded-lg" src={post.photoUrl} width="640" height="640" alt="Post image." />
                 </div>
                 {scheme === 'normal' && (

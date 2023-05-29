@@ -1,18 +1,29 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { RiCamera2Line } from 'react-icons/ri';
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
+import nookies from 'nookies';
 
 import { signUp } from '../functions';
-import useUser from '../hooks/useUser';
 import Wrapper from '../components/Wrapper';
 import Card from '../components/Card';
 import Input from '../components/Input';
 import InputError from '../components/Input/InputError';
 import Button from '../components/Button';
 import Link from '../components/Link';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const cookies = nookies.get(context);
+
+    if (cookies.token) {
+        context.res.setHeader('location', '/');
+        context.res.statusCode = 302;
+    }
+
+    return { props: {} };
+};
 
 const SignUp: NextPage = () => {
     const {
@@ -21,7 +32,6 @@ const SignUp: NextPage = () => {
         formState: { errors },
     } = useForm();
     const router = useRouter();
-    const user = useUser();
     const [error, setError] = useState('');
 
     const registerOptions = {
@@ -47,18 +57,13 @@ const SignUp: NextPage = () => {
 
         try {
             await signUp(username, email, password);
+            router.push('/');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 setError(error.message);
             }
         }
     });
-
-    useEffect(() => {
-        if (user) {
-            router.push('/');
-        }
-    }, [user]);
 
     return (
         <Wrapper>

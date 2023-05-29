@@ -1,10 +1,11 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState, FormEvent } from 'react';
 import NextImage from 'next/future/image';
 import { RiCloseLine, RiCamera2Line } from 'react-icons/ri';
 import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
+import nookies from 'nookies';
 
 import { createPost } from '../functions';
 import useUser from '../hooks/useUser';
@@ -14,6 +15,17 @@ import Card from '../components/Card';
 import InputError from '../components/Input/InputError';
 import Button from '../components/Button';
 import Textarea from '../components/Textarea';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const cookies = nookies.get(context);
+
+    if (!cookies.token) {
+        context.res.setHeader('location', '/login');
+        context.res.statusCode = 302;
+    }
+
+    return { props: {} };
+};
 
 const CreatePostPage: NextPage = () => {
     const {

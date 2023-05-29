@@ -33,7 +33,7 @@ const Header = () => {
         setIsSearchOpen(false);
     }
 
-    function handleChange(name: string) {
+    async function handleChange(name: string) {
         switch (name) {
             case 'Login':
                 router.push('/login');
@@ -45,8 +45,8 @@ const Header = () => {
                 router.push('/settings/edit-profile');
                 break;
             case 'Logout':
+                await signOut();
                 router.push('/login');
-                signOut();
         }
 
         closeDropdown();

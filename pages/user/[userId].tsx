@@ -42,9 +42,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
         posts.splice(0, posts.length);
     }
 
-    console.log(user);
-    console.log(postIds);
-
     return {
         props: {
             user,

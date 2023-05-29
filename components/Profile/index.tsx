@@ -30,7 +30,7 @@ const Profile = ({ user, posts }: Props) => {
     const generatePosts = () => {
         return posts
             ?.sort((a, b) => b.timestamp - a.timestamp)
-            .map((post) => <ProfilePost key={post.id} id={post.id} photoUrl={post.photoUrl} />);
+            .map((post) => <ProfilePost key={post.id} post={post} />);
     };
 
     const followClick = async () => {

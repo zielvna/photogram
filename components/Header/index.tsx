@@ -10,7 +10,8 @@ import useOnClickOutside from '../../hooks/useOnClickOutside';
 import Input from '../Input';
 import Search from '../Search';
 import Dropdown from '../Dropdown';
-import { signOut } from '../../functions';
+import { search, signOut } from '../../functions';
+import IUser from '../../types/User';
 
 const Header = () => {
     const user = useUser();
@@ -20,6 +21,8 @@ const Header = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
     const [menuItems, setMenuItems] = useState(['Login']);
+    const [searchValue, setSearchValue] = useState('');
+    const [searchResults, setSearchResults] = useState<IUser[]>([]);
 
     useOnClickOutside(searchRef, () => {
         setIsSearchOpen(false);
@@ -31,6 +34,11 @@ const Header = () => {
 
     function closeSearch() {
         setIsSearchOpen(false);
+    }
+
+    function inputChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setSearchValue(e.target.value);
+        openSearch();
     }
 
     async function handleChange(name: string) {
@@ -58,6 +66,27 @@ const Header = () => {
         }
     }, [user]);
 
+    useEffect(() => {
+        let timeout: NodeJS.Timeout;
+
+        if (!searchValue.length) {
+            setSearchResults([]);
+        }
+
+        if (isSearchOpen && searchValue.length > 0) {
+            timeout = setTimeout(async () => {
+                const results = await search(searchValue);
+                setSearchResults(results);
+            }, 1000);
+        }
+
+        return () => {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+        };
+    }, [isSearchOpen, searchValue]);
+
     return (
         <header className="relative z-10">
             <div
@@ -74,7 +103,13 @@ const Header = () => {
                         ref={searchRef}
                     >
                         <div className={classnames('w-full md:block', { hidden: !isSearchOpen })}>
-                            <Input name="search" placeholder="Search" spellCheck="false" onClick={openSearch} />
+                            <Input
+                                name="search"
+                                placeholder="Search"
+                                spellCheck="false"
+                                onClick={openSearch}
+                                onChange={inputChange}
+                            />
                         </div>
                         <RiCloseLine
                             className={classnames('ml-2 text-3xl text-black shrink-0 cursor-pointer md:hidden', {
@@ -82,7 +117,7 @@ const Header = () => {
                             })}
                             onClick={closeSearch}
                         />
-                        <Search isOpen={isSearchOpen} />
+                        <Search isOpen={isSearchOpen} results={searchResults} closeSearch={closeSearch} />
                     </div>
                     <div className={classnames('w-44 flex justify-end', { 'hidden md:flex': isSearchOpen })}>
                         <RiSearchLine

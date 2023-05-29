@@ -10,6 +10,7 @@ import useOnClickOutside from '../../hooks/useOnClickOutside';
 import Input from '../Input';
 import Search from '../Search';
 import Dropdown from '../Dropdown';
+import { signOut } from '../../functions';
 
 const Header = () => {
     const user = useUser();
@@ -43,6 +44,9 @@ const Header = () => {
             case 'Settings':
                 router.push('/settings/edit-profile');
                 break;
+            case 'Logout':
+                router.push('/login');
+                signOut();
         }
 
         closeDropdown();

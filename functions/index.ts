@@ -1,5 +1,10 @@
 import { auth, db, storage } from '../firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    updateProfile,
+    signOut as FirebaseSignOut,
+} from 'firebase/auth';
 import {
     setDoc,
     getDoc,
@@ -33,6 +38,10 @@ export const signUp = async (username: string, email: string, password: string) 
 
 export const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
+};
+
+export const signOut = async () => {
+    await FirebaseSignOut(auth);
 };
 
 export const createPost = async (photo: File, description: string) => {

@@ -35,18 +35,6 @@ export const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
 };
 
-export const getUser = async (userId: string) => {
-    const user = await getDoc(doc(db, 'users', userId));
-
-    const userData = user.data();
-
-    if (userData) {
-        userData.id = userId;
-    }
-
-    return userData as IUser;
-};
-
 export const createPost = async (photo: File, description: string) => {
     if (!auth.currentUser) {
         return;
@@ -89,6 +77,10 @@ export const createComment = async (postId: string, content: string) => {
     });
 };
 
+export const deleteComment = async (commentId: string) => {
+    await deleteDoc(doc(db, 'comments', commentId));
+};
+
 export const like = async (postId: string, status: boolean) => {
     const uid = auth.currentUser?.uid;
 
@@ -116,27 +108,6 @@ export const like = async (postId: string, status: boolean) => {
             status,
         });
     }
-};
-
-export const getUserStats = async (userId: string) => {
-    const postsRef = collection(db, 'posts');
-    const q = query(postsRef, where('userId', '==', userId));
-
-    const posts = await getDocs(q);
-
-    const postsData: IPost[] = [];
-
-    posts.forEach(async (post) => {
-        const postData = post.data();
-        postData.id = post.id;
-        postsData.push(postData as IPost);
-    });
-
-    return { posts: postsData, postCount: posts.size };
-};
-
-export const deleteComment = async (commentId: string) => {
-    await deleteDoc(doc(db, 'comments', commentId));
 };
 
 export const follow = async (userId: string, status: boolean) => {
@@ -168,36 +139,19 @@ export const follow = async (userId: string, status: boolean) => {
     }
 };
 
-export const isFollowed = async (userId: string, followerId: string) => {
-    const followsRef = collection(db, 'follows');
-    const q = query(
-        followsRef,
-        where('userId', '==', userId),
-        where('followerId', '==', followerId),
-        where('status', '==', true)
-    );
+export const getUserPosts = async (userId: string) => {
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, where('userId', '==', userId));
 
-    const follows = await getDocs(q);
+    const posts = await getDocs(q);
 
-    return follows.size ? true : false;
-};
+    const postIds: string[] = [];
 
-export const getFollowers = async (userId: string) => {
-    const followsRef = collection(db, 'follows');
-    const q = query(followsRef, where('userId', '==', userId), where('status', '==', true));
+    posts.forEach((post) => {
+        postIds.push(post.id);
+    });
 
-    const follows = await getDocs(q);
-
-    return follows.size;
-};
-
-export const getFollows = async (userId: string) => {
-    const followsRef = collection(db, 'follows');
-    const q = query(followsRef, where('followerId', '==', userId), where('status', '==', true));
-
-    const follows = await getDocs(q);
-
-    return follows.size;
+    return postIds;
 };
 
 export const getHomePagePosts = async (end: number, timestamp = 0) => {
@@ -247,13 +201,13 @@ export const getPostStats = async (postId: string) => {
     return { likes: likesNumber, comments: commentsNumber };
 };
 
-export const isPostLiked = async (userId: string | null, postId: string) => {
-    if (userId) {
+export const isPostLiked = async (loggedUserId: string | null, postId: string) => {
+    if (loggedUserId) {
         const likesRef = collection(db, 'likes');
         const q = query(
             likesRef,
             where('postId', '==', postId),
-            where('userId', '==', userId),
+            where('userId', '==', loggedUserId),
             where('status', '==', true)
         );
 
@@ -265,7 +219,7 @@ export const isPostLiked = async (userId: string | null, postId: string) => {
     return false;
 };
 
-export const getPostComments = async (userId: string | null, postId: string) => {
+export const getPostComments = async (loggedUserId: string | null, postId: string) => {
     const commentsRef = collection(db, 'comments');
     const q = query(commentsRef, where('postId', '==', postId), orderBy('timestamp', 'desc'));
 
@@ -277,7 +231,7 @@ export const getPostComments = async (userId: string | null, postId: string) => 
         const commentData = comment.data() as IComment;
         commentData.id = comment.id;
 
-        if (userId === commentData.userId) {
+        if (loggedUserId === commentData.userId) {
             commentData.isRemovable = true;
         } else {
             commentData.isRemovable = false;
@@ -287,7 +241,7 @@ export const getPostComments = async (userId: string | null, postId: string) => 
     });
 
     for (let i = 0; i < commentsData.length; i++) {
-        const author = await getUser(commentsData[i].userId);
+        const author = await getUser(loggedUserId, commentsData[i].userId, false, false);
         commentsData[i].author = author;
     }
 
@@ -295,7 +249,7 @@ export const getPostComments = async (userId: string | null, postId: string) => 
 };
 
 export const getPost = async (
-    userId: string | null,
+    loggedUserId: string | null,
     postId: string,
     withAuthor: boolean,
     withComments: boolean,
@@ -309,23 +263,91 @@ export const getPost = async (
 
     postData.stats = await getPostStats(postData.id);
 
-    if (userId === postData.userId) {
+    if (loggedUserId === postData.userId) {
         postData.isRemovable = true;
     } else {
         postData.isRemovable = false;
     }
 
     if (withAuthor) {
-        postData.author = await getUser(postData.userId);
+        postData.author = await getUser(loggedUserId, postData.userId, false, false);
     }
 
     if (withComments) {
-        postData.comments = await getPostComments(userId, postData.id);
+        postData.comments = await getPostComments(loggedUserId, postData.id);
     }
 
     if (withIsLiked) {
-        postData.isLiked = await isPostLiked(userId, postData.id);
+        postData.isLiked = await isPostLiked(loggedUserId, postData.id);
     }
 
     return postData;
+};
+
+export const getUser = async (
+    loggedUserId: string | null,
+    userId: string,
+    withStats: boolean,
+    withIsFollowed: boolean
+) => {
+    const user = await getDoc(doc(db, 'users', userId));
+
+    const userData = user.data() as IUser;
+
+    userData.id = userId;
+
+    if (loggedUserId !== userId) {
+        userData.isFollowable = true;
+    } else {
+        userData.isFollowable = false;
+    }
+
+    if (withStats) {
+        userData.stats = await getUserStats(userId);
+    }
+
+    if (withIsFollowed) {
+        userData.isFollowed = await isUserFollowed(loggedUserId, userId);
+    }
+
+    return userData;
+};
+
+export const getUserStats = async (userId: string) => {
+    const followersNumber = await getUserFollowers(userId);
+    const followingNumber = await getUserFollowing(userId);
+
+    return { followers: followersNumber, following: followingNumber };
+};
+
+export const getUserFollowers = async (userId: string) => {
+    const followsRef = collection(db, 'follows');
+    const q = query(followsRef, where('userId', '==', userId), where('status', '==', true));
+
+    const follows = await getDocs(q);
+
+    return follows.size;
+};
+
+export const getUserFollowing = async (userId: string) => {
+    const followsRef = collection(db, 'follows');
+    const q = query(followsRef, where('followerId', '==', userId), where('status', '==', true));
+
+    const follows = await getDocs(q);
+
+    return follows.size;
+};
+
+export const isUserFollowed = async (loggedUserId: string | null, userId: string) => {
+    const followsRef = collection(db, 'follows');
+    const q = query(
+        followsRef,
+        where('userId', '==', userId),
+        where('followerId', '==', loggedUserId),
+        where('status', '==', true)
+    );
+
+    const follows = await getDocs(q);
+
+    return follows.size ? true : false;
 };

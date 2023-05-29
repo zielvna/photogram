@@ -7,82 +7,58 @@ import IPost from '../../types/Post';
 import Header from '../../components/Header';
 import Wrapper from '../../components/Wrapper';
 import Profile from '../../components/Profile';
-import { getFollowers, getFollows, getUser, getUserStats, isFollowed } from '../../functions';
+import { getPost, getUser, getUserPosts } from '../../functions';
 
 type Props = {
-    loggedUserId: string | null;
     user: IUser | null;
-    posts: IPost[] | null;
-    postCount: number;
-    isUserFollowed: boolean;
-    followerCount: number;
-    followingCount: number;
+    posts: IPost[];
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-    const userId = context.params?.userId;
-
-    const user = await getUser(userId as string);
-
-    const { posts, postCount } = await getUserStats(userId as string);
-
-    console.log(posts);
-
     const cookies = nookies.get(context);
-
-    let isUserFollowed = false;
-
     let loggedUserId = null;
 
     if (cookies.token) {
-        loggedUserId = (await auth.verifyIdToken(cookies.token)).uid;
-
-        isUserFollowed = await isFollowed(user.id, loggedUserId);
+        try {
+            loggedUserId = (await auth.verifyIdToken(cookies.token)).uid;
+        } catch (error) {
+            loggedUserId = null;
+        }
     }
 
-    const followerCount = await getFollowers(user.id);
-    const followingCount = await getFollows(user.id);
+    const userId = context.params?.userId as string;
+
+    const user = await getUser(loggedUserId, userId, true, true);
+
+    const postIds = await getUserPosts(userId);
+
+    const posts: IPost[] = [];
+
+    try {
+        for (let i = 0; i < postIds.length; i++) {
+            posts.push(await getPost(loggedUserId, postIds[i], true, false, true));
+        }
+    } catch (error) {
+        posts.splice(0, posts.length);
+    }
+
+    console.log(user);
+    console.log(postIds);
 
     return {
         props: {
-            loggedUserId: loggedUserId,
             user,
             posts,
-            postCount,
-            isUserFollowed,
-            followerCount,
-            followingCount,
         },
     };
 };
 
-const ProfilePage: NextPage<Props> = ({
-    loggedUserId,
-    user,
-    posts,
-    postCount,
-    isUserFollowed,
-    followerCount,
-    followingCount,
-}) => {
+const ProfilePage: NextPage<Props> = ({ user, posts }) => {
     return (
         <>
             <Header />
             <Wrapper>
-                <div className="w-full mt-4">
-                    {user && (
-                        <Profile
-                            loggedUserId={loggedUserId}
-                            id={user.id}
-                            username={user.username}
-                            postCount={postCount}
-                            followerCount={followerCount}
-                            followingCount={followingCount}
-                            posts={posts}
-                            isFollowed={isUserFollowed}
-                        />
-                    )}
-                </div>
+                <div className="w-full mt-4">{user && <Profile user={user} posts={posts} />}</div>
             </Wrapper>
         </>
     );

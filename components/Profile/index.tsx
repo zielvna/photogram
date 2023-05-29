@@ -2,40 +2,30 @@ import NextImage from 'next/future/image';
 import { FirebaseError } from 'firebase/app';
 
 import useUser from '../../hooks/useUser';
-import { follow, getFollowers } from '../../functions';
+import { follow, getUserFollowers } from '../../functions';
 import Card from '../Card';
 import Button from '../Button';
 import ProfilePost from './ProfilePost';
 import IPost from '../../types/Post';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import IUser from '../../types/User';
 
 type Props = {
-    loggedUserId: string | null;
-    id: string;
-    username: string;
-    posts: IPost[] | null;
-    postCount: number;
-    followerCount: number;
-    followingCount: number;
-    isFollowed: boolean;
+    user: IUser;
+    posts: IPost[];
 };
 
-const Profile = ({
-    loggedUserId,
-    id,
-    username,
-    posts,
-    postCount,
-    followerCount,
-    followingCount,
-    isFollowed,
-}: Props) => {
-    const user = useUser();
+const Profile = ({ user, posts }: Props) => {
+    const authUser = useUser();
     const router = useRouter();
-    const [isUserFollowed, setIsUserFollowed] = useState(isFollowed);
-    const [userFollowerCount, setUserFollowerCount] = useState(followerCount);
+    const [isUserFollowed, setIsUserFollowed] = useState(user.isFollowed);
+    const [userFollowerCount, setUserFollowerCount] = useState(user.stats?.followers);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        setUserFollowerCount(user.stats?.followers);
+    }, [user.stats]);
 
     const generatePosts = () => {
         return posts
@@ -44,10 +34,11 @@ const Profile = ({
     };
 
     const followClick = async () => {
-        if (user) {
+        if (authUser) {
             try {
-                await follow(id, !isUserFollowed);
-                const followers = await getFollowers(id);
+                await follow(user.id, !isUserFollowed);
+                const followers = await getUserFollowers(user.id);
+
                 setIsUserFollowed(!isUserFollowed);
                 setUserFollowerCount(followers);
             } catch (error) {
@@ -71,21 +62,21 @@ const Profile = ({
                     alt="User avatar."
                 />
                 <div className="mt-4 sm:mt-0 sm:ml-4">
-                    <p className="text-2xl font-bold">{username}</p>
+                    <p className="text-2xl font-bold">{user.username}</p>
                     <div className="mt-4 flex">
                         <p className="text-center">
-                            <span className="font-bold">{postCount}</span> posts
+                            <span className="font-bold">{posts.length}</span> posts
                         </p>
                         <p className="ml-4 text-center">
                             <span className="font-bold">{userFollowerCount}</span> followers
                         </p>
                         <p className="ml-4 text-center">
-                            <span className="font-bold">{followingCount}</span> following
+                            <span className="font-bold">{user.stats?.following}</span> following
                         </p>
                     </div>
                     <p className="mt-4">profile description</p>
                     <div className="w-32 mt-4">
-                        {loggedUserId !== id && (
+                        {user.isFollowable && (
                             <Button scheme={isUserFollowed ? 'inverse' : 'normal'} onClick={followClick}>
                                 {isUserFollowed ? 'Unfollow' : 'Follow'}
                             </Button>

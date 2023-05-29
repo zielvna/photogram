@@ -4,6 +4,6 @@
 
 @layer base {
     body {
-        @apply bg-light-gray text-black text-sm;
+        @apply bg-light-gray text-black text-sm overflow-hidden;
     }
 }

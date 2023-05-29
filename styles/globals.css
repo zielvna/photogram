@@ -4,6 +4,19 @@
 
 @layer base {
     body {
-        @apply bg-light-gray text-black text-sm overflow-hidden;
+        @apply bg-light-gray text-black text-sm no-scrollbar;
+    }
+}
+
+@layer utilities {
+    @variants responsive {
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     }
 }

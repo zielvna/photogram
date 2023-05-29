@@ -124,10 +124,10 @@ const Post = ({ post, scheme = 'normal' }: Props) => {
         }
     };
 
-    function handleChange(name: string) {
+    async function handleChange(name: string) {
         switch (name) {
             case 'Remove':
-                deletePost(post.id);
+                await deletePost(post.id);
                 router.push('/');
         }
 
@@ -143,7 +143,7 @@ const Post = ({ post, scheme = 'normal' }: Props) => {
     const description = post.author ? (
         <>
             <PostDescription user={post.author} content={post.description} timestamp={post.timestamp} />
-            {post.isRemovable && (
+            {post.isRemovable && scheme === 'normal' && (
                 <div className="md:relative">
                     <RiMoreLine className="text-3xl text-black cursor-pointer" onClick={openDropdown} />
                     <Dropdown show={isDropdownOpen} items={['Remove']} onChange={handleChange} passRef={dropdownRef} />

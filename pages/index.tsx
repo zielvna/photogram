@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps<{
         }
     }
 
-    const postIds = await getHomePagePosts(2);
+    const postIds = await getHomePagePosts(3);
 
     const posts: IPost[] = [];
 
@@ -46,36 +46,39 @@ export const getServerSideProps: GetServerSideProps<{
 
 const HomePage = ({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const user = useUser();
-    const [index, setIndex] = useState(0);
     const [postsList, setPostsList] = useState(posts);
     const [message, setMessage] = useState('Loading posts...');
 
     useEffect(() => {
+        if (postsList.length < 3) {
+            setMessage('No more posts!');
+        }
+    });
+
+    useEffect(() => {
         const listener = async () => {
-            if (window.innerHeight + Math.round(window.scrollY) >= document.body.offsetHeight) {
-                setIndex(index + 3);
+            if (window.innerHeight + Math.round(window.scrollY) >= document.body.offsetHeight && user !== undefined) {
+                const postIds = await getHomePagePosts(3, postsList[postsList.length - 1].timestamp);
 
-                const postIds = await getHomePagePosts(2, postsList[postsList.length - 1].timestamp);
-
-                const posts: IPost[] = [];
+                const newPosts: IPost[] = [];
 
                 for (let i = 0; i < postIds.length; i++) {
                     const post = await getPost(user?.uid ?? null, postIds[i], true, false, true);
-                    posts.push(post);
+                    newPosts.push(post);
                 }
+
+                setPostsList([...postsList, ...newPosts]);
 
                 if (postIds.length < 3) {
                     setMessage('No more posts!');
                 }
-
-                setPostsList([...postsList, ...posts]);
             }
         };
 
         window.addEventListener('scroll', listener);
 
         return () => removeEventListener('scroll', listener);
-    }, [user]);
+    }, [user, postsList]);
 
     return (
         <>

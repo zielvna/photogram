@@ -18,6 +18,8 @@ import {
     deleteDoc,
     limit,
     startAfter,
+    startAt,
+    endAt,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
@@ -359,4 +361,21 @@ export const isUserFollowed = async (loggedUserId: string | null, userId: string
     const follows = await getDocs(q);
 
     return follows.size ? true : false;
+};
+
+export const search = async (text: string) => {
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, orderBy('username'), startAt(text), endAt(`${text}\uf8ff`), limit(3));
+
+    const users = await getDocs(q);
+
+    const usersData: IUser[] = [];
+
+    users.forEach((user) => {
+        const userData = user.data() as IUser;
+        userData.id = user.id;
+        usersData.push(userData);
+    });
+
+    return usersData;
 };

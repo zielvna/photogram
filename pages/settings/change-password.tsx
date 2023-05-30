@@ -7,6 +7,11 @@ import Settings from '../../components/Settings';
 import SettingsField from '../../components/Settings/SettingsField';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import InputError from '../../components/Input/InputError';
+import { changePassword } from '../../functions';
+import { FirebaseError } from 'firebase/app';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);
@@ -20,23 +25,63 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const ChangePasswordPage: NextPage = () => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm();
+    const [error, setError] = useState('');
+
+    const registerOptions = {
+        newPassword: {
+            required: 'New password is required.',
+            minLength: {
+                value: 6,
+                message: 'New password is too short.',
+            },
+        },
+    };
+
+    const onSubmit = handleSubmit(async (data) => {
+        const { newPassword } = data;
+
+        try {
+            await changePassword(newPassword);
+            reset();
+        } catch (error) {
+            if (error instanceof FirebaseError) {
+                setError(error.message);
+            }
+        }
+    });
+
     return (
         <>
             <Header />
             <Wrapper>
                 <div className="w-full max-w-2xl mt-4">
                     <Settings name="Change password">
-                        <SettingsField name="Old password">
-                            <Input type="password" name="old-password" />
-                        </SettingsField>
-                        <div className="mt-4">
+                        <form onSubmit={onSubmit}>
                             <SettingsField name="New password">
-                                <Input type="password" name="new-password" />
+                                <Input
+                                    name="newPassword"
+                                    register={register}
+                                    validation={registerOptions.newPassword}
+                                    type="password"
+                                    spellCheck="false"
+                                />
                             </SettingsField>
-                        </div>
-                        <div className="w-32 mt-4 sm:ml-36">
-                            <Button>Submit</Button>
-                        </div>
+                            {errors.newPassword && errors.newPassword.message && (
+                                <div className="sm:ml-36">
+                                    <InputError>{errors.newPassword.message.toString()}</InputError>
+                                </div>
+                            )}
+                            <div className="w-32 mt-4 sm:ml-36">
+                                <Button>Submit</Button>
+                            </div>
+                            <p className="text-red-500 text-xs font-bold text-center">{error}</p>
+                        </form>
                     </Settings>
                 </div>
             </Wrapper>

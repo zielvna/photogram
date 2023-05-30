@@ -4,6 +4,7 @@ import {
     createUserWithEmailAndPassword,
     updateProfile,
     signOut as FirebaseSignOut,
+    updatePassword,
 } from 'firebase/auth';
 import {
     setDoc,
@@ -44,6 +45,12 @@ export const signIn = async (email: string, password: string) => {
 
 export const signOut = async () => {
     await FirebaseSignOut(auth);
+};
+
+export const changePassword = async (newPassword: string) => {
+    if (auth.currentUser) {
+        await updatePassword(auth.currentUser, newPassword);
+    }
 };
 
 export const createPost = async (photo: File, description: string) => {

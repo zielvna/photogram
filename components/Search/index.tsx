@@ -19,7 +19,13 @@ const Search = ({ isOpen, results, closeSearch }: Props) => (
         {results.map((result) => (
             <Link href={`/user/${result.id}`} key={result.id}>
                 <div className="flex items-center cursor-pointer mt-2" onClick={closeSearch}>
-                    <NextImage className="rounded-full" src="/40.png" width="40" height="40" alt="User avatar." />
+                    <NextImage
+                        className="rounded-full object-cover"
+                        src={result.photoUrl ? result.photoUrl : '/40.png'}
+                        width="40"
+                        height="40"
+                        alt="User avatar."
+                    />
                     <span className="ml-2 font-bold">{result.username}</span>
                 </div>
             </Link>

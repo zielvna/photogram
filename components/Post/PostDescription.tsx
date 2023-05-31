@@ -13,7 +13,13 @@ type Props = {
 const PostDescription = ({ user, content, timestamp }: Props) => (
     <div className="flex">
         <div className="shrink-0">
-            <NextImage className="w-10 h-10 rounded-full" src="/40.png" width="40" height="40" alt="User avatar." />
+            <NextImage
+                className="w-10 h-10 rounded-full object-cover"
+                src={user.photoUrl ? user.photoUrl : '/40.png'}
+                width="40"
+                height="40"
+                alt="User avatar."
+            />
         </div>
         <div className="ml-2 flex flex-col">
             <p>

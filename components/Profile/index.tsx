@@ -55,8 +55,8 @@ const Profile = ({ user, posts }: Props) => {
         <Card>
             <div className="flex flex-col sm:flex-row">
                 <NextImage
-                    className="rounded-full sm:mx-8"
-                    src="/160.png"
+                    className="w-40 h-40 rounded-full object-cover sm:mx-8"
+                    src={user.photoUrl ? user.photoUrl : '/160.png'}
                     width="160"
                     height="160"
                     alt="User avatar."
@@ -74,7 +74,7 @@ const Profile = ({ user, posts }: Props) => {
                             <span className="font-bold">{user.stats?.following}</span> following
                         </p>
                     </div>
-                    <p className="mt-4">profile description</p>
+                    <p className="mt-4">{user.bio}</p>
                     <div className="w-32 mt-4">
                         {user.isFollowable && (
                             <Button scheme={isUserFollowed ? 'inverse' : 'normal'} onClick={followClick}>

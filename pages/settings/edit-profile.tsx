@@ -136,7 +136,7 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
             return user.photoUrl;
         }
 
-        return '';
+        return '/40.png';
     };
 
     return (
@@ -155,17 +155,13 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
                                         <input type="file" ref={fileRef} className="hidden" onChange={onSelectFile} />
                                         <RiCamera2Line className="text-xl" />
                                     </div>
-                                    {preview || user?.photoUrl ? (
-                                        <NextImage
-                                            className="w-10 h-10 rounded-full object-cover"
-                                            src={getProfilePhoto()}
-                                            width="40"
-                                            height="40"
-                                            alt="User avatar."
-                                        />
-                                    ) : (
-                                        <div className="w-10 h-10 rounded-full bg-gray"></div>
-                                    )}
+                                    <NextImage
+                                        className="w-10 h-10 rounded-full object-cover"
+                                        src={getProfilePhoto()}
+                                        width="40"
+                                        height="40"
+                                        alt="User avatar."
+                                    />
                                 </div>
                                 <p className="text-red-500 text-xs font-bold">{fileError}</p>
                             </SettingsField>

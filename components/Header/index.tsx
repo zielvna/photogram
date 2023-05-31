@@ -23,6 +23,7 @@ const Header = () => {
     const [menuItems, setMenuItems] = useState(['Login']);
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState<IUser[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useOnClickOutside(searchRef, () => {
         setIsSearchOpen(false);
@@ -74,9 +75,13 @@ const Header = () => {
         }
 
         if (isSearchOpen && searchValue.length > 0) {
+            setIsLoading(true);
+            setSearchResults([]);
+
             timeout = setTimeout(async () => {
                 const results = await search(searchValue);
                 setSearchResults(results);
+                setIsLoading(false);
             }, 1000);
         }
 
@@ -117,7 +122,12 @@ const Header = () => {
                             })}
                             onClick={closeSearch}
                         />
-                        <Search isOpen={isSearchOpen} results={searchResults} closeSearch={closeSearch} />
+                        <Search
+                            isOpen={isSearchOpen && searchValue.length > 0}
+                            isLoading={isLoading}
+                            results={searchResults}
+                            closeSearch={closeSearch}
+                        />
                     </div>
                     <div className={classnames('w-44 flex justify-end', { 'hidden md:flex': isSearchOpen })}>
                         <RiSearchLine

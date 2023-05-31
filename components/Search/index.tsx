@@ -2,20 +2,23 @@ import classnames from 'classnames';
 import NextImage from 'next/image';
 import IUser from '../../types/User';
 import Link from 'next/link';
+import { RiLoader2Line } from 'react-icons/ri';
 
 type Props = {
     isOpen: boolean;
     results: IUser[];
+    isLoading: boolean;
     closeSearch: () => void;
 };
 
-const Search = ({ isOpen, results, closeSearch }: Props) => (
+const Search = ({ isOpen, results, isLoading, closeSearch }: Props) => (
     <div
         className={classnames(
             'w-full bg-white px-2 rounded-lg fixed inset-0 top-16 md:p-2 md:border md:border-light-gray md:absolute md:top-full md:inset-auto',
             { hidden: !isOpen }
         )}
     >
+        {!results.length && !isLoading && <div className="flex justify-center">User not found.</div>}
         {results.map((result) => (
             <Link href={`/user/${result.id}`} key={result.id}>
                 <div className="flex items-center cursor-pointer mt-2" onClick={closeSearch}>
@@ -30,6 +33,11 @@ const Search = ({ isOpen, results, closeSearch }: Props) => (
                 </div>
             </Link>
         ))}
+        {isLoading && (
+            <div className="flex justify-center">
+                <RiLoader2Line className="text-gray text-2xl animate-spin" />
+            </div>
+        )}
     </div>
 );
 

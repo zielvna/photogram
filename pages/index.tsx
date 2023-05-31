@@ -10,6 +10,7 @@ import IPost from '../types/Post';
 import { getHomePagePosts, getPost } from '../functions';
 import { useEffect, useState } from 'react';
 import useUser from '../hooks/useUser';
+import { RiLoader2Line } from 'react-icons/ri';
 
 export const getServerSideProps: GetServerSideProps<{
     posts: IPost[];
@@ -47,11 +48,11 @@ export const getServerSideProps: GetServerSideProps<{
 const HomePage = ({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const user = useUser();
     const [postsList, setPostsList] = useState(posts);
-    const [message, setMessage] = useState('Loading posts...');
+    const [message, setMessage] = useState('loading');
 
     useEffect(() => {
         if (postsList.length < 3) {
-            setMessage('No more posts!');
+            setMessage('no more');
         }
     });
 
@@ -89,7 +90,13 @@ const HomePage = ({ posts }: InferGetServerSidePropsType<typeof getServerSidePro
                         <Post post={post} scheme="preview" />
                     </div>
                 ))}
-                <div className="my-4">{message}</div>
+                <div className="my-4 flex justify-center">
+                    {message === 'loading' ? (
+                        <RiLoader2Line className="text-gray text-3xl animate-spin" />
+                    ) : (
+                        'No more posts.'
+                    )}
+                </div>
             </Wrapper>
         </>
     );

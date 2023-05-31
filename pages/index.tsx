@@ -11,6 +11,7 @@ import { getHomePagePosts, getPost } from '../functions';
 import { useEffect, useState } from 'react';
 import useUser from '../hooks/useUser';
 import { RiLoader2Line } from 'react-icons/ri';
+import Progress from '../components/Progress';
 
 export const getServerSideProps: GetServerSideProps<{
     posts: IPost[];
@@ -83,6 +84,7 @@ const HomePage = ({ posts }: InferGetServerSidePropsType<typeof getServerSidePro
 
     return (
         <>
+            <Progress />
             <Header />
             <Wrapper>
                 {postsList.map((post) => (

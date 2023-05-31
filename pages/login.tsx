@@ -13,6 +13,7 @@ import Input from '../components/Input';
 import InputError from '../components/Input/InputError';
 import Button from '../components/Button';
 import Link from '../components/Link';
+import Progress from '../components/Progress';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);
@@ -65,54 +66,57 @@ const LogIn: NextPage = () => {
     });
 
     return (
-        <Wrapper>
-            <div className="w-full max-w-xs mt-20">
-                <Card>
-                    <div className="flex justify-center">
-                        <RiCamera2Line className="text-3xl text-black" />
-                    </div>
-                    <hr className="text-light-gray my-4" />
-                    <form onSubmit={onSubmit}>
-                        <Input
-                            name="email"
-                            register={register}
-                            validation={registerOptions.email}
-                            type="email"
-                            placeholder="E-mail"
-                            spellCheck="false"
-                        />
-                        {errors.email && errors.email.message && (
-                            <InputError>{errors.email.message.toString()}</InputError>
-                        )}
-                        <div className="mt-2">
+        <>
+            <Progress />
+            <Wrapper>
+                <div className="w-full max-w-xs mt-20">
+                    <Card>
+                        <div className="flex justify-center">
+                            <RiCamera2Line className="text-3xl text-black" />
+                        </div>
+                        <hr className="text-light-gray my-4" />
+                        <form onSubmit={onSubmit}>
                             <Input
-                                name="password"
+                                name="email"
                                 register={register}
-                                validation={registerOptions.password}
-                                type="password"
-                                placeholder="Password"
+                                validation={registerOptions.email}
+                                type="email"
+                                placeholder="E-mail"
+                                spellCheck="false"
                             />
-                            {errors.password && errors.password.message && (
-                                <InputError>{errors.password.message.toString()}</InputError>
+                            {errors.email && errors.email.message && (
+                                <InputError>{errors.email.message.toString()}</InputError>
                             )}
+                            <div className="mt-2">
+                                <Input
+                                    name="password"
+                                    register={register}
+                                    validation={registerOptions.password}
+                                    type="password"
+                                    placeholder="Password"
+                                />
+                                {errors.password && errors.password.message && (
+                                    <InputError>{errors.password.message.toString()}</InputError>
+                                )}
+                            </div>
+                            <div className="w-full mt-4">
+                                <Button>Log in</Button>
+                            </div>
+                            <p className="text-red-500 text-xs font-bold text-center">{error}</p>
+                        </form>
+                        <hr className="text-light-gray my-4" />
+                        <div className="flex justify-center">
+                            <p>
+                                Don&apos;t have an account?{' '}
+                                <Link className="text-blue font-bold" href="/signup">
+                                    Sign up
+                                </Link>
+                            </p>
                         </div>
-                        <div className="w-full mt-4">
-                            <Button>Log in</Button>
-                        </div>
-                        <p className="text-red-500 text-xs font-bold text-center">{error}</p>
-                    </form>
-                    <hr className="text-light-gray my-4" />
-                    <div className="flex justify-center">
-                        <p>
-                            Don&apos;t have an account?{' '}
-                            <Link className="text-blue font-bold" href="/signup">
-                                Sign up
-                            </Link>
-                        </p>
-                    </div>
-                </Card>
-            </div>
-        </Wrapper>
+                    </Card>
+                </div>
+            </Wrapper>
+        </>
     );
 };
 

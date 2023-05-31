@@ -17,6 +17,7 @@ import IUser from '../../types/User';
 import { FirebaseError } from 'firebase/app';
 import InputError from '../../components/Input/InputError';
 import { RiCamera2Line } from 'react-icons/ri';
+import Progress from '../../components/Progress';
 
 type Props = {
     user: IUser | null;
@@ -141,6 +142,7 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
 
     return (
         <>
+            <Progress />
             <Header />
             <Wrapper>
                 <div className="w-full max-w-2xl mt-4">

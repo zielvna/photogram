@@ -8,6 +8,7 @@ import Header from '../../components/Header';
 import Wrapper from '../../components/Wrapper';
 import Profile from '../../components/Profile';
 import { getPost, getUser, getUserPosts } from '../../functions';
+import Progress from '../../components/Progress';
 
 type Props = {
     user: IUser | null;
@@ -53,6 +54,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 const ProfilePage: NextPage<Props> = ({ user, posts }) => {
     return (
         <>
+            <Progress />
             <Header />
             <Wrapper>
                 <div className="w-full mt-4">{user && <Profile user={user} posts={posts} />}</div>

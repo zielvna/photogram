@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import InputError from '../../components/Input/InputError';
 import { changePassword } from '../../functions';
 import { FirebaseError } from 'firebase/app';
+import Progress from '../../components/Progress';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);
@@ -58,6 +59,7 @@ const ChangePasswordPage: NextPage = () => {
 
     return (
         <>
+            <Progress />
             <Header />
             <Wrapper>
                 <div className="w-full max-w-2xl mt-4">

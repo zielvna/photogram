@@ -7,6 +7,7 @@ import { getPost } from '../../functions';
 import Header from '../../components/Header';
 import Wrapper from '../../components/Wrapper';
 import Post from '../../components/Post';
+import Progress from '../../components/Progress';
 
 export const getServerSideProps: GetServerSideProps<{
     post: IPost | null;
@@ -40,6 +41,7 @@ export const getServerSideProps: GetServerSideProps<{
 
 const PostPage = ({ post }: InferGetServerSidePropsType<typeof getServerSideProps>) => (
     <>
+        <Progress />
         <Header />
         <Wrapper>
             <div className="mt-4">{post ? <Post post={post} scheme="normal" /> : <p>Post not found.</p>}</div>

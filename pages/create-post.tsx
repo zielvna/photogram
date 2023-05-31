@@ -15,6 +15,7 @@ import Card from '../components/Card';
 import InputError from '../components/Input/InputError';
 import Button from '../components/Button';
 import Textarea from '../components/Textarea';
+import Progress from '../components/Progress';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);
@@ -104,6 +105,7 @@ const CreatePostPage: NextPage = () => {
 
     return (
         <>
+            <Progress />
             <Header />
             <Wrapper>
                 <div className="mt-4">

@@ -36,6 +36,8 @@ export const signUp = async (username: string, email: string, password: string) 
 
     await setDoc(doc(db, 'users', user.uid), {
         username,
+        photoUrl: '',
+        bio: '',
     });
 };
 
@@ -50,6 +52,27 @@ export const signOut = async () => {
 export const changePassword = async (newPassword: string) => {
     if (auth.currentUser) {
         await updatePassword(auth.currentUser, newPassword);
+    }
+};
+
+export const updateUserPhoto = async (newPhoto: File) => {
+    if (auth.currentUser) {
+        const imageRef = ref(storage, `users/${auth.currentUser.uid}`);
+        const snapshot = await uploadBytes(imageRef, newPhoto);
+        const photoUrl = await getDownloadURL(snapshot.ref);
+
+        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+            photoUrl,
+        });
+    }
+};
+
+export const updateUserProfile = async (newUsername: string, newBio: string) => {
+    if (auth.currentUser) {
+        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+            username: newUsername,
+            bio: newBio,
+        });
     }
 };
 

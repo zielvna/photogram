@@ -64,6 +64,7 @@ const Post = ({ post, scheme = 'normal' }: Props) => {
                 reset();
                 await createComment(post.id, comment);
                 setPostComments(await getPostComments(user.uid, post.id));
+                setPostCommentCount(postComments.length + 1);
             } catch (error) {
                 if (error instanceof FirebaseError) {
                     setError(error.message);
@@ -76,7 +77,7 @@ const Post = ({ post, scheme = 'normal' }: Props) => {
 
     const commentRemoved = async () => {
         setPostComments(await getPostComments(user?.uid ?? null, post.id));
-        setPostCommentCount(postComments.length);
+        setPostCommentCount(postComments.length - 1);
     };
 
     const generateComments = () => {

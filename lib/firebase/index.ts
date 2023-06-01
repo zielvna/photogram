@@ -216,6 +216,52 @@ export const getHomePagePosts = async (end: number, timestamp = 0) => {
     return postIds;
 };
 
+export const getFollowingPagePosts = async (loggedUserId: string | null, end: number, timestamp = 0) => {
+    const postsRef = collection(db, 'posts');
+
+    let q;
+
+    if (timestamp) {
+        q = query(postsRef, orderBy('timestamp', 'desc'), startAfter(timestamp));
+    } else {
+        q = query(postsRef, orderBy('timestamp', 'desc'));
+    }
+
+    const posts = await getDocs(q);
+
+    const postsData: IPost[] = [];
+
+    posts.forEach((post) => {
+        const postData = post.data() as IPost;
+        postData.id = post.id;
+        postsData.push(postData);
+    });
+
+    const followsRef = collection(db, 'follows');
+
+    const postIds: string[] = [];
+
+    for (let i = 0; i < postsData.length; i++) {
+        const q = query(
+            followsRef,
+            where('userId', '==', postsData[i].userId),
+            where('followerId', '==', loggedUserId),
+            where('status', '==', true)
+        );
+        const follows = await getDocs(q);
+
+        if (follows.size > 0 || postsData[i].userId === loggedUserId) {
+            postIds.push(postsData[i].id);
+
+            if (postIds.length === end) {
+                break;
+            }
+        }
+    }
+
+    return postIds;
+};
+
 export const getPostLikesNumber = async (postId: string) => {
     const likesRef = collection(db, 'likes');
     const q = query(likesRef, where('postId', '==', postId), where('status', '==', true));

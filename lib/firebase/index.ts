@@ -3,7 +3,6 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     updatePassword,
-    updateProfile,
 } from 'firebase/auth';
 import {
     collection,
@@ -30,8 +29,6 @@ import IUser from '../../types/User';
 
 export const signUp = async (username: string, email: string, password: string) => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
-
-    await updateProfile(user, { displayName: username });
 
     await setDoc(doc(db, 'users', user.uid), {
         username,

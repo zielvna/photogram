@@ -1,4 +1,4 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import nookies from 'nookies';
 import { useEffect, useState } from 'react';
 import { RiLoader2Line } from 'react-icons/ri';
@@ -11,18 +11,24 @@ import useUser from '../hooks/useUser';
 import { getFollowingPagePosts, getPost } from '../lib/firebase';
 import IPost from '../types/Post';
 
-export const getServerSideProps: GetServerSideProps<{
+type Props = {
     posts: IPost[];
-}> = async (context) => {
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
     const cookies = nookies.get(context);
+
+    if (!cookies.token) {
+        context.res.setHeader('location', '/login');
+        context.res.statusCode = 302;
+    }
+
     let loggedUserId = null;
 
-    if (cookies.token) {
-        try {
-            loggedUserId = (await auth.verifyIdToken(cookies.token)).uid;
-        } catch (error) {
-            loggedUserId = null;
-        }
+    try {
+        loggedUserId = (await auth.verifyIdToken(cookies.token)).uid;
+    } catch (error) {
+        loggedUserId = null;
     }
 
     const postIds = await getFollowingPagePosts(loggedUserId, 3);
@@ -44,10 +50,10 @@ export const getServerSideProps: GetServerSideProps<{
     };
 };
 
-const FollowingPage = ({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-    const user = useUser();
+const FollowingPage: NextPage<Props> = ({ posts }) => {
     const [postsList, setPostsList] = useState(posts);
     const [message, setMessage] = useState('loading');
+    const user = useUser();
 
     useEffect(() => {
         if (postsList.length < 3) {

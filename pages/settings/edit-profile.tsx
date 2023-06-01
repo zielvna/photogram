@@ -33,12 +33,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
     let loggedUserId = null;
 
-    if (cookies.token) {
-        try {
-            loggedUserId = (await auth.verifyIdToken(cookies.token)).uid;
-        } catch (error) {
-            loggedUserId = null;
-        }
+    try {
+        loggedUserId = (await auth.verifyIdToken(cookies.token)).uid;
+    } catch (error) {
+        loggedUserId = null;
     }
 
     let user = null;
@@ -55,18 +53,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 };
 
 const EditProfilePage: NextPage<Props> = ({ user }) => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-        setValue,
-    } = useForm();
-    const router = useRouter();
     const [error, setError] = useState('');
     const fileRef = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
+    const router = useRouter();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+    } = useForm();
 
     const registerOptions = {
         username: { required: 'Username is required.' },
@@ -77,6 +74,23 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
             },
         },
     };
+
+    useEffect(() => {
+        setValue('username', user?.username);
+        setValue('bio', user?.bio);
+    }, []);
+
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreview(null);
+            return;
+        }
+
+        const fileUrl = URL.createObjectURL(selectedFile);
+        setPreview(fileUrl);
+
+        return () => URL.revokeObjectURL(fileUrl);
+    }, [selectedFile]);
 
     const onSubmit = handleSubmit(async (data) => {
         const { username, bio } = data;
@@ -96,11 +110,6 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
         }
     });
 
-    useEffect(() => {
-        setValue('username', user?.username);
-        setValue('bio', user?.bio);
-    }, []);
-
     const onSelectFile = (e: FormEvent<HTMLInputElement>) => {
         const target = e.target as HTMLInputElement;
 
@@ -114,18 +123,6 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
             fileRef.current.click();
         }
     };
-
-    useEffect(() => {
-        if (!selectedFile) {
-            setPreview(null);
-            return;
-        }
-
-        const fileUrl = URL.createObjectURL(selectedFile);
-        setPreview(fileUrl);
-
-        return () => URL.revokeObjectURL(fileUrl);
-    }, [selectedFile]);
 
     const getProfilePhoto = () => {
         if (preview) {

@@ -28,18 +28,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const CreatePostPage: NextPage = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
-    const router = useRouter();
-    const user = useUser();
     const fileRef = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [fileError, setFileError] = useState('');
+    const router = useRouter();
+    const user = useUser();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
     const registerOptions = {
         description: {
@@ -49,6 +49,24 @@ const CreatePostPage: NextPage = () => {
             },
         },
     };
+
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreview(null);
+            return;
+        }
+
+        const fileUrl = URL.createObjectURL(selectedFile);
+        setPreview(fileUrl);
+
+        return () => URL.revokeObjectURL(fileUrl);
+    }, [selectedFile]);
+
+    useEffect(() => {
+        if (user === null) {
+            router.push('/login');
+        }
+    }, [user]);
 
     const onSelectFile = (e: FormEvent<HTMLInputElement>) => {
         const target = e.target as HTMLInputElement;
@@ -83,24 +101,6 @@ const CreatePostPage: NextPage = () => {
             }
         }
     });
-
-    useEffect(() => {
-        if (!selectedFile) {
-            setPreview(null);
-            return;
-        }
-
-        const fileUrl = URL.createObjectURL(selectedFile);
-        setPreview(fileUrl);
-
-        return () => URL.revokeObjectURL(fileUrl);
-    }, [selectedFile]);
-
-    useEffect(() => {
-        if (user === null) {
-            router.push('/login');
-        }
-    }, [user]);
 
     return (
         <>

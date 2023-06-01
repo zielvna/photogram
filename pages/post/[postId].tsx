@@ -1,4 +1,4 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import nookies from 'nookies';
 import Header from '../../components/Header';
 import Post from '../../components/Post';
@@ -8,9 +8,11 @@ import { auth } from '../../firebaseAdmin';
 import { getPost } from '../../lib/firebase';
 import IPost from '../../types/Post';
 
-export const getServerSideProps: GetServerSideProps<{
+type Props = {
     post: IPost | null;
-}> = async (context) => {
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
     const cookies = nookies.get(context);
     let loggedUserId = null;
 
@@ -38,7 +40,7 @@ export const getServerSideProps: GetServerSideProps<{
     };
 };
 
-const PostPage = ({ post }: InferGetServerSidePropsType<typeof getServerSideProps>) => (
+const PostPage: NextPage<Props> = ({ post }) => (
     <>
         <Progress />
         <Header />

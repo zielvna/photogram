@@ -26,13 +26,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const LogIn: NextPage = () => {
+    const [error, setError] = useState('');
+    const router = useRouter();
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
-    const router = useRouter();
-    const [error, setError] = useState('');
 
     const registerOptions = {
         email: {

@@ -50,16 +50,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     };
 };
 
-const ProfilePage: NextPage<Props> = ({ user, posts }) => {
-    return (
-        <>
-            <Progress />
-            <Header />
-            <Wrapper>
-                <div className="w-full mt-4">{user && <Profile user={user} posts={posts} />}</div>
-            </Wrapper>
-        </>
-    );
-};
+const ProfilePage: NextPage<Props> = ({ user, posts }) => (
+    <>
+        <Progress />
+        <Header />
+        <Wrapper>
+            <div className="w-full mt-4">{user && <Profile user={user} posts={posts} />}</div>
+        </Wrapper>
+    </>
+);
 
 export default ProfilePage;

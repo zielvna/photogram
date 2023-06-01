@@ -144,7 +144,7 @@ const Header = () => {
                         <Link href="/">
                             <RiHomeLine className="mx-2 text-3xl text-black cursor-pointer" />
                         </Link>
-                        <Link href="/following">
+                        <Link href={user ? '/following' : '/login'}>
                             <RiHeart3Line className="mx-2 text-3xl text-black cursor-pointer" />
                         </Link>
                         <Link href="/create-post">

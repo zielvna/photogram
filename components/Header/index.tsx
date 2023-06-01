@@ -1,7 +1,15 @@
 import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import { RiAddBoxLine, RiCamera2Line, RiCloseLine, RiHomeLine, RiSearchLine, RiUserLine } from 'react-icons/ri';
+import {
+    RiAddBoxLine,
+    RiCamera2Line,
+    RiCloseLine,
+    RiHeart3Line,
+    RiHomeLine,
+    RiSearchLine,
+    RiUserLine,
+} from 'react-icons/ri';
 import useDropdown from '../../hooks/useDropdown';
 import useOnClickOutside from '../../hooks/useOnClickOutside';
 import useUser from '../../hooks/useUser';
@@ -135,6 +143,9 @@ const Header = () => {
                         />
                         <Link href="/">
                             <RiHomeLine className="mx-2 text-3xl text-black cursor-pointer" />
+                        </Link>
+                        <Link href="/following">
+                            <RiHeart3Line className="mx-2 text-3xl text-black cursor-pointer" />
                         </Link>
                         <Link href="/create-post">
                             <RiAddBoxLine className="mx-2 text-3xl text-black cursor-pointer" />

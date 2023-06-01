@@ -18,6 +18,7 @@ import { FirebaseError } from 'firebase/app';
 import InputError from '../../components/Input/InputError';
 import { RiCamera2Line } from 'react-icons/ri';
 import Progress from '../../components/Progress';
+import { useRouter } from 'next/router';
 
 type Props = {
     user: IUser | null;
@@ -62,11 +63,11 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
         reset,
         setValue,
     } = useForm();
+    const router = useRouter();
     const [error, setError] = useState('');
     const fileRef = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
-    const [fileError, setFileError] = useState('');
 
     const registerOptions = {
         username: { required: 'Username is required.' },
@@ -81,13 +82,14 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
     const onSubmit = handleSubmit(async (data) => {
         const { username, bio } = data;
 
-        if (!fileRef.current?.files?.[0]) {
-            return setFileError('Photo is required.');
-        }
-
         try {
             await updateUserProfile(username, bio);
-            await updateUserPhoto(fileRef.current.files[0]);
+
+            if (fileRef.current?.files?.[0]) {
+                await updateUserPhoto(fileRef.current.files[0]);
+            }
+
+            router.push(`/user/${user?.id}`);
         } catch (error) {
             if (error instanceof FirebaseError) {
                 setError(error.message);
@@ -106,8 +108,6 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
         if (target.files) {
             setSelectedFile(target.files[0]);
         }
-
-        setFileError('');
     };
 
     const openFile = () => {
@@ -165,7 +165,6 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
                                         alt="User avatar."
                                     />
                                 </div>
-                                <p className="text-red-500 text-xs font-bold">{fileError}</p>
                             </SettingsField>
                             <div className="mt-4">
                                 <SettingsField name="Username">

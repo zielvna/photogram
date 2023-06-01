@@ -10,9 +10,10 @@ import Button from '../../components/Button';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import InputError from '../../components/Input/InputError';
-import { changePassword } from '../../functions';
+import { changePassword, signOut } from '../../functions';
 import { FirebaseError } from 'firebase/app';
 import Progress from '../../components/Progress';
+import { useRouter } from 'next/router';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);
@@ -32,6 +33,7 @@ const ChangePasswordPage: NextPage = () => {
         formState: { errors },
         reset,
     } = useForm();
+    const router = useRouter();
     const [error, setError] = useState('');
 
     const registerOptions = {
@@ -49,7 +51,8 @@ const ChangePasswordPage: NextPage = () => {
 
         try {
             await changePassword(newPassword);
-            reset();
+            await signOut();
+            router.push('/login');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 setError(error.message);

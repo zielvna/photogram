@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
 import { RiMoreLine } from 'react-icons/ri';
 
-import { deletePost, createComment, like, getPostComments, getPostLikesNumber } from '../../functions';
+import { deletePost, createComment, like, getPostComments, getPostLikesNumber } from '../../lib/firebase';
 import useUser from '../../hooks/useUser';
 import IPost from '../../types/Post';
 import Card from '../Card';

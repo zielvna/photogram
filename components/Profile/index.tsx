@@ -2,7 +2,7 @@ import NextImage from 'next/future/image';
 import { FirebaseError } from 'firebase/app';
 
 import useUser from '../../hooks/useUser';
-import { follow, getUserFollowers } from '../../functions';
+import { follow, getUserFollowers } from '../../lib/firebase';
 import Card from '../Card';
 import Button from '../Button';
 import ProfilePost from './ProfilePost';

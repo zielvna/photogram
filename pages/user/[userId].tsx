@@ -7,7 +7,7 @@ import IPost from '../../types/Post';
 import Header from '../../components/Header';
 import Wrapper from '../../components/Wrapper';
 import Profile from '../../components/Profile';
-import { getPost, getUser, getUserPosts } from '../../functions';
+import { getPost, getUser, getUserPosts } from '../../lib/firebase';
 import Progress from '../../components/Progress';
 
 type Props = {

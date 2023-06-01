@@ -1,4 +1,4 @@
-import { auth, db, storage } from '../firebase';
+import { auth, db, storage } from '../../firebase';
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -25,9 +25,9 @@ import {
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
-import IPost from '../types/Post';
-import IUser from '../types/User';
-import IComment from '../types/Comment';
+import IPost from '../../types/Post';
+import IUser from '../../types/User';
+import IComment from '../../types/Comment';
 
 export const signUp = async (username: string, email: string, password: string) => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);

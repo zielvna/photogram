@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
 import nookies from 'nookies';
 
-import { createPost } from '../functions';
+import { createPost } from '../lib/firebase';
 import useUser from '../hooks/useUser';
 import Header from '../components/Header';
 import Wrapper from '../components/Wrapper';

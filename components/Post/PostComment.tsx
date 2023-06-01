@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import Link from '../Link';
 import IUser from '../../types/User';
-import { deleteComment } from '../../functions';
+import { deleteComment } from '../../lib/firebase';
 
 type Props = {
     id: string;

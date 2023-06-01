@@ -7,7 +7,7 @@ import Header from '../components/Header';
 import Wrapper from '../components/Wrapper';
 import Post from '../components/Post';
 import IPost from '../types/Post';
-import { getHomePagePosts, getPost } from '../functions';
+import { getHomePagePosts, getPost } from '../lib/firebase';
 import { useEffect, useState } from 'react';
 import useUser from '../hooks/useUser';
 import { RiLoader2Line } from 'react-icons/ri';

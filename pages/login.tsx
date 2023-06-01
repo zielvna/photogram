@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
 import nookies from 'nookies';
 
-import { signIn } from '../functions';
+import { signIn } from '../lib/firebase';
 import Wrapper from '../components/Wrapper';
 import Card from '../components/Card';
 import Input from '../components/Input';

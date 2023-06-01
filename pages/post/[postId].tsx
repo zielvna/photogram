@@ -3,7 +3,7 @@ import nookies from 'nookies';
 
 import { auth } from '../../firebaseAdmin';
 import IPost from '../../types/Post';
-import { getPost } from '../../functions';
+import { getPost } from '../../lib/firebase';
 import Header from '../../components/Header';
 import Wrapper from '../../components/Wrapper';
 import Post from '../../components/Post';

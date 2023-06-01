@@ -10,7 +10,7 @@ import Button from '../../components/Button';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import InputError from '../../components/Input/InputError';
-import { changePassword, signOut } from '../../functions';
+import { changePassword, signOut } from '../../lib/firebase';
 import { FirebaseError } from 'firebase/app';
 import Progress from '../../components/Progress';
 import { useRouter } from 'next/router';

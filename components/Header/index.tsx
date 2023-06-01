@@ -10,7 +10,7 @@ import useOnClickOutside from '../../hooks/useOnClickOutside';
 import Input from '../Input';
 import Search from '../Search';
 import Dropdown from '../Dropdown';
-import { search, signOut } from '../../functions';
+import { search, signOut } from '../../lib/firebase';
 import IUser from '../../types/User';
 
 const Header = () => {

@@ -11,7 +11,7 @@ import Textarea from '../../components/Textarea';
 import Button from '../../components/Button';
 import { useForm } from 'react-hook-form';
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { getUser, updateUserPhoto, updateUserProfile } from '../../functions';
+import { getUser, updateUserPhoto, updateUserProfile } from '../../lib/firebase';
 import { auth } from '../../firebaseAdmin';
 import IUser from '../../types/User';
 import { FirebaseError } from 'firebase/app';

@@ -1,13 +1,12 @@
 import { credential } from 'firebase-admin';
 import { getApp, getApps, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
-import serviceAccountKey from './serviceAccountKey.json';
 
 const firebaseConfig = {
     credential: credential.cert({
-        privateKey: serviceAccountKey.private_key,
-        clientEmail: serviceAccountKey.client_email,
-        projectId: serviceAccountKey.project_id,
+        privateKey: (process.env.NEXT_PUBLIC_SERVICE_ACCOUNT_PRIVATE_KEY as string).replace(/\\n/g, '\n'),
+        clientEmail: process.env.NEXT_PUBLIC_SERVICE_ACCOUNT_CLIENT_EMAIL,
+        projectId: process.env.NEXT_PUBLIC_SERVICE_ACCOUNT_PROJECT_ID,
     }),
 };
 

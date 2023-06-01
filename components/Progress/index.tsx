@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
 const Progress = () => {
-    const router = useRouter();
     const progressRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         let interval: ReturnType<typeof setInterval>;

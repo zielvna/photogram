@@ -14,8 +14,8 @@ type Props = {
 
 const Settings = ({ name, children }: Props) => {
     const ref = useRef<HTMLDivElement>(null);
-    const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(ref);
     const router = useRouter();
+    const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(ref);
 
     const tabs = [
         { id: 'edit-profile', name: 'Edit profile' },

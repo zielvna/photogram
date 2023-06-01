@@ -9,9 +9,9 @@ type Props = {
 };
 
 const Dropdown = ({ show, items, passRef, onChange }: Props) => {
-    function itemClick(name: string) {
+    const itemClick = (name: string) => {
         onChange(name);
-    }
+    };
 
     return (
         <div

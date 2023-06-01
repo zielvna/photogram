@@ -16,11 +16,11 @@ type Props = {
 };
 
 const Profile = ({ user, posts }: Props) => {
-    const authUser = useUser();
-    const router = useRouter();
     const [isUserFollowed, setIsUserFollowed] = useState(user.isFollowed);
     const [userFollowerCount, setUserFollowerCount] = useState(user.stats?.followers);
     const [error, setError] = useState('');
+    const authUser = useUser();
+    const router = useRouter();
 
     useEffect(() => {
         setUserFollowerCount(user.stats?.followers);

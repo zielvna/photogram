@@ -21,52 +21,16 @@ import Link from '../Link';
 import Search from '../Search';
 
 const Header = () => {
-    const user = useUser();
-    const router = useRouter();
-    const searchRef = useRef<HTMLDivElement>(null);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
     const [menuItems, setMenuItems] = useState(['Login']);
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState<IUser[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-
-    useOnClickOutside(searchRef, () => {
-        setIsSearchOpen(false);
-    });
-
-    function openSearch() {
-        setIsSearchOpen(true);
-    }
-
-    function closeSearch() {
-        setIsSearchOpen(false);
-    }
-
-    function inputChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setSearchValue(e.target.value);
-        openSearch();
-    }
-
-    async function handleChange(name: string) {
-        switch (name) {
-            case 'Login':
-                router.push('/login');
-                break;
-            case 'Profile':
-                router.push(`/user/${user?.uid}`);
-                break;
-            case 'Settings':
-                router.push('/settings/edit-profile');
-                break;
-            case 'Logout':
-                await signOut();
-                router.push('/login');
-        }
-
-        closeDropdown();
-    }
+    const searchRef = useRef<HTMLDivElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const user = useUser();
+    const router = useRouter();
+    const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
 
     useEffect(() => {
         if (user) {
@@ -98,6 +62,42 @@ const Header = () => {
             }
         };
     }, [isSearchOpen, searchValue]);
+
+    useOnClickOutside(searchRef, () => {
+        setIsSearchOpen(false);
+    });
+
+    const openSearch = () => {
+        setIsSearchOpen(true);
+    };
+
+    const closeSearch = () => {
+        setIsSearchOpen(false);
+    };
+
+    const inputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(e.target.value);
+        openSearch();
+    };
+
+    const handleChange = async (name: string) => {
+        switch (name) {
+            case 'Login':
+                router.push('/login');
+                break;
+            case 'Profile':
+                router.push(`/user/${user?.uid}`);
+                break;
+            case 'Settings':
+                router.push('/settings/edit-profile');
+                break;
+            case 'Logout':
+                await signOut();
+                router.push('/login');
+        }
+
+        closeDropdown();
+    };
 
     return (
         <header className="relative z-10">

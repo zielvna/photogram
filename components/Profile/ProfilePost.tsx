@@ -1,6 +1,6 @@
 import NextImage from 'next/future/image';
 import { useRouter } from 'next/router';
-import { createRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { RiChat3Fill, RiHeart3Fill } from 'react-icons/ri';
 import IPost from '../../types/Post';
 
@@ -9,13 +9,8 @@ type Props = {
 };
 
 const ProfilePost = ({ post }: Props) => {
+    const elementRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
-
-    const postClick = () => {
-        router.push(`/post/${post.id}`);
-    };
-
-    const elementRef = createRef<HTMLDivElement>();
 
     useEffect(() => {
         if (!elementRef.current) {
@@ -32,6 +27,10 @@ const ProfilePost = ({ post }: Props) => {
 
         return () => resizeObserver.disconnect();
     }, [elementRef]);
+
+    const postClick = () => {
+        router.push(`/post/${post.id}`);
+    };
 
     return (
         <div className="relative group cursor-pointer" onClick={postClick} ref={elementRef}>

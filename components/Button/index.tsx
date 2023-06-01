@@ -6,7 +6,7 @@ type Props = {
     [props: string]: any;
 };
 
-const Button = ({ children, scheme = 'normal', className, ...props }: Props) => {
+const Button = ({ children, scheme = 'normal', ...props }: Props) => {
     let buttonStyles;
 
     switch (scheme) {

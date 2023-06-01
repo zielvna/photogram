@@ -24,6 +24,15 @@ type Props = {
 };
 
 const Post = ({ post, scheme = 'normal' }: Props) => {
+    const [error, setError] = useState('');
+    const [postComments, setPostComments] = useState(post.comments ?? []);
+    const [isPostLiked, setIsPostLiked] = useState(post.isLiked ?? false);
+    const [postLikeCount, setPostLikeCount] = useState(post.stats?.likes ?? 0);
+    const [postCommentCount, setPostCommentCount] = useState(post.stats?.comments ?? 0);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const user = useUser();
+    const router = useRouter();
+    const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
     const {
         register,
         handleSubmit,
@@ -31,15 +40,6 @@ const Post = ({ post, scheme = 'normal' }: Props) => {
         setFocus,
         formState: { errors },
     } = useForm();
-    const user = useUser();
-    const router = useRouter();
-    const dropdownRef = useRef<HTMLDivElement>(null);
-    const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
-    const [error, setError] = useState('');
-    const [postComments, setPostComments] = useState(post.comments ?? []);
-    const [isPostLiked, setIsPostLiked] = useState(post.isLiked ?? false);
-    const [postLikeCount, setPostLikeCount] = useState(post.stats?.likes ?? 0);
-    const [postCommentCount, setPostCommentCount] = useState(post.stats?.comments ?? 0);
 
     useEffect(() => {
         setIsPostLiked(post.isLiked ?? false);

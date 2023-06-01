@@ -1,4 +1,4 @@
-import { RiHeart3Line, RiHeart3Fill, RiChat3Line } from 'react-icons/ri';
+import { RiChat3Line, RiHeart3Fill, RiHeart3Line } from 'react-icons/ri';
 
 type Props = {
     likes: number;

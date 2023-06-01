@@ -1,19 +1,18 @@
+import { FirebaseError } from 'firebase/app';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { RiCamera2Line } from 'react-icons/ri';
-import { useForm } from 'react-hook-form';
-import { FirebaseError } from 'firebase/app';
 import nookies from 'nookies';
-
-import { signUp } from '../lib/firebase';
-import Wrapper from '../components/Wrapper';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { RiCamera2Line } from 'react-icons/ri';
+import Button from '../components/Button';
 import Card from '../components/Card';
 import Input from '../components/Input';
 import InputError from '../components/Input/InputError';
-import Button from '../components/Button';
 import Link from '../components/Link';
 import Progress from '../components/Progress';
+import Wrapper from '../components/Wrapper';
+import { signUp } from '../lib/firebase';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);

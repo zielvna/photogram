@@ -1,8 +1,8 @@
 import classnames from 'classnames';
 import NextImage from 'next/image';
-import IUser from '../../types/User';
 import Link from 'next/link';
 import { RiLoader2Line } from 'react-icons/ri';
+import IUser from '../../types/User';
 
 type Props = {
     isOpen: boolean;

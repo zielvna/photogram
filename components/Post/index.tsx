@@ -1,23 +1,22 @@
+import classnames from 'classnames';
+import { FirebaseError } from 'firebase/app';
 import NextImage from 'next/future/image';
 import { useRouter } from 'next/router';
-import { useState, useRef, useEffect } from 'react';
-import classnames from 'classnames';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FirebaseError } from 'firebase/app';
 import { RiMoreLine } from 'react-icons/ri';
-
-import { deletePost, createComment, like, getPostComments, getPostLikesNumber } from '../../lib/firebase';
+import useDropdown from '../../hooks/useDropdown';
 import useUser from '../../hooks/useUser';
+import { createComment, deletePost, getPostComments, getPostLikesNumber, like } from '../../lib/firebase';
 import IPost from '../../types/Post';
+import Button from '../Button';
 import Card from '../Card';
-import PostDescription from './PostDescription';
-import PostComment from './PostComment';
-import PostActions from './PostActions';
+import Dropdown from '../Dropdown';
 import Input from '../Input';
 import InputError from '../Input/InputError';
-import Button from '../Button';
-import Dropdown from '../Dropdown';
-import useDropdown from '../../hooks/useDropdown';
+import PostActions from './PostActions';
+import PostComment from './PostComment';
+import PostDescription from './PostDescription';
 
 type Props = {
     post: IPost;

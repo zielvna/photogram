@@ -1,7 +1,6 @@
 import type { AppProps } from 'next/app';
-
-import '../firebase.ts';
 import { UserProvider } from '../contexts/userContext';
+import '../firebase.ts';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {

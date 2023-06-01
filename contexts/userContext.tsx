@@ -1,7 +1,6 @@
-import { useState, useEffect, createContext } from 'react';
 import { User as FirebaseUser, onIdTokenChanged } from 'firebase/auth';
 import nookies from 'nookies';
-
+import { createContext, useEffect, useState } from 'react';
 import { auth } from '../firebase';
 
 type User = FirebaseUser | null | undefined;

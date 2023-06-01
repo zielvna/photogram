@@ -1,19 +1,18 @@
+import { FirebaseError } from 'firebase/app';
 import type { GetServerSideProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import nookies from 'nookies';
-
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import Button from '../../components/Button';
 import Header from '../../components/Header';
-import Wrapper from '../../components/Wrapper';
+import Input from '../../components/Input';
+import InputError from '../../components/Input/InputError';
+import Progress from '../../components/Progress';
 import Settings from '../../components/Settings';
 import SettingsField from '../../components/Settings/SettingsField';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
-import InputError from '../../components/Input/InputError';
+import Wrapper from '../../components/Wrapper';
 import { changePassword, signOut } from '../../lib/firebase';
-import { FirebaseError } from 'firebase/app';
-import Progress from '../../components/Progress';
-import { useRouter } from 'next/router';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);

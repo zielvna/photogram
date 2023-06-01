@@ -1,21 +1,20 @@
-import type { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { useEffect, useRef, useState, FormEvent } from 'react';
-import NextImage from 'next/future/image';
-import { RiCloseLine, RiCamera2Line } from 'react-icons/ri';
-import { useForm } from 'react-hook-form';
 import { FirebaseError } from 'firebase/app';
+import type { GetServerSideProps, NextPage } from 'next';
+import NextImage from 'next/future/image';
+import { useRouter } from 'next/router';
 import nookies from 'nookies';
-
-import { createPost } from '../lib/firebase';
-import useUser from '../hooks/useUser';
-import Header from '../components/Header';
-import Wrapper from '../components/Wrapper';
-import Card from '../components/Card';
-import InputError from '../components/Input/InputError';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { RiCamera2Line, RiCloseLine } from 'react-icons/ri';
 import Button from '../components/Button';
-import Textarea from '../components/Textarea';
+import Card from '../components/Card';
+import Header from '../components/Header';
+import InputError from '../components/Input/InputError';
 import Progress from '../components/Progress';
+import Textarea from '../components/Textarea';
+import Wrapper from '../components/Wrapper';
+import useUser from '../hooks/useUser';
+import { createPost } from '../lib/firebase';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = nookies.get(context);

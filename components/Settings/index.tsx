@@ -1,12 +1,11 @@
-import { useRef } from 'react';
-import { useRouter } from 'next/router';
 import classnames from 'classnames';
+import { useRouter } from 'next/router';
+import { useRef } from 'react';
 import { RiMoreLine } from 'react-icons/ri';
-
 import useDropdown from '../../hooks/useDropdown';
 import Card from '../Card';
-import Link from '../Link';
 import Dropdown from '../Dropdown';
+import Link from '../Link';
 
 type Props = {
     name: string;

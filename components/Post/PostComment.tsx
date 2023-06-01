@@ -1,9 +1,8 @@
-import NextImage from 'next/image';
 import moment from 'moment';
-
-import Link from '../Link';
-import IUser from '../../types/User';
+import NextImage from 'next/image';
 import { deleteComment } from '../../lib/firebase';
+import IUser from '../../types/User';
+import Link from '../Link';
 
 type Props = {
     id: string;

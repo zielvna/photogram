@@ -1,17 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
 import classnames from 'classnames';
-import { RiCamera2Line, RiCloseLine, RiSearchLine, RiHomeLine, RiAddBoxLine, RiUserLine } from 'react-icons/ri';
-
-import Link from '../Link';
-import useUser from '../../hooks/useUser';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
+import { RiAddBoxLine, RiCamera2Line, RiCloseLine, RiHomeLine, RiSearchLine, RiUserLine } from 'react-icons/ri';
 import useDropdown from '../../hooks/useDropdown';
 import useOnClickOutside from '../../hooks/useOnClickOutside';
-import Input from '../Input';
-import Search from '../Search';
-import Dropdown from '../Dropdown';
+import useUser from '../../hooks/useUser';
 import { search, signOut } from '../../lib/firebase';
 import IUser from '../../types/User';
+import Dropdown from '../Dropdown';
+import Input from '../Input';
+import Link from '../Link';
+import Search from '../Search';
 
 const Header = () => {
     const user = useUser();

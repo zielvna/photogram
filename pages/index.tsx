@@ -1,17 +1,15 @@
-/* eslint-disable no-empty */
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import nookies from 'nookies';
-
-import { auth } from '../firebaseAdmin';
-import Header from '../components/Header';
-import Wrapper from '../components/Wrapper';
-import Post from '../components/Post';
-import IPost from '../types/Post';
-import { getHomePagePosts, getPost } from '../lib/firebase';
 import { useEffect, useState } from 'react';
-import useUser from '../hooks/useUser';
 import { RiLoader2Line } from 'react-icons/ri';
+import Header from '../components/Header';
+import Post from '../components/Post';
 import Progress from '../components/Progress';
+import Wrapper from '../components/Wrapper';
+import { auth } from '../firebaseAdmin';
+import useUser from '../hooks/useUser';
+import { getHomePagePosts, getPost } from '../lib/firebase';
+import IPost from '../types/Post';
 
 export const getServerSideProps: GetServerSideProps<{
     posts: IPost[];

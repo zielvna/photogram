@@ -1,24 +1,23 @@
+import { FirebaseError } from 'firebase/app';
 import type { GetServerSideProps, NextPage } from 'next';
 import NextImage from 'next/future/image';
+import { useRouter } from 'next/router';
 import nookies from 'nookies';
-
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { RiCamera2Line } from 'react-icons/ri';
+import Button from '../../components/Button';
 import Header from '../../components/Header';
-import Wrapper from '../../components/Wrapper';
+import Input from '../../components/Input';
+import InputError from '../../components/Input/InputError';
+import Progress from '../../components/Progress';
 import Settings from '../../components/Settings';
 import SettingsField from '../../components/Settings/SettingsField';
-import Input from '../../components/Input';
 import Textarea from '../../components/Textarea';
-import Button from '../../components/Button';
-import { useForm } from 'react-hook-form';
-import { FormEvent, useEffect, useRef, useState } from 'react';
-import { getUser, updateUserPhoto, updateUserProfile } from '../../lib/firebase';
+import Wrapper from '../../components/Wrapper';
 import { auth } from '../../firebaseAdmin';
+import { getUser, updateUserPhoto, updateUserProfile } from '../../lib/firebase';
 import IUser from '../../types/User';
-import { FirebaseError } from 'firebase/app';
-import InputError from '../../components/Input/InputError';
-import { RiCamera2Line } from 'react-icons/ri';
-import Progress from '../../components/Progress';
-import { useRouter } from 'next/router';
 
 type Props = {
     user: IUser | null;

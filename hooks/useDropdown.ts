@@ -1,5 +1,4 @@
-import { useState, RefObject } from 'react';
-
+import { RefObject, useState } from 'react';
 import useOnClickOutside from './useOnClickOutside';
 
 const useDropdown = (ref: RefObject<HTMLElement>): [boolean, () => void, () => void] => {

@@ -1,7 +1,7 @@
 import NextImage from 'next/future/image';
 import { useRouter } from 'next/router';
 import { createRef, useEffect } from 'react';
-import { RiArrowRightLine, RiChat3Fill, RiHeart3Fill } from 'react-icons/ri';
+import { RiChat3Fill, RiHeart3Fill } from 'react-icons/ri';
 import IPost from '../../types/Post';
 
 type Props = {

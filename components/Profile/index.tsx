@@ -1,15 +1,14 @@
-import NextImage from 'next/future/image';
 import { FirebaseError } from 'firebase/app';
-
+import NextImage from 'next/future/image';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import useUser from '../../hooks/useUser';
 import { follow, getUserFollowers } from '../../lib/firebase';
-import Card from '../Card';
-import Button from '../Button';
-import ProfilePost from './ProfilePost';
 import IPost from '../../types/Post';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import IUser from '../../types/User';
+import Button from '../Button';
+import Card from '../Card';
+import ProfilePost from './ProfilePost';
 
 type Props = {
     user: IUser;

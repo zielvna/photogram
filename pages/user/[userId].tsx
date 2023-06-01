@@ -1,14 +1,13 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import nookies from 'nookies';
-
-import { auth } from '../../firebaseAdmin';
-import IUser from '../../types/User';
-import IPost from '../../types/Post';
 import Header from '../../components/Header';
-import Wrapper from '../../components/Wrapper';
 import Profile from '../../components/Profile';
-import { getPost, getUser, getUserPosts } from '../../lib/firebase';
 import Progress from '../../components/Progress';
+import Wrapper from '../../components/Wrapper';
+import { auth } from '../../firebaseAdmin';
+import { getPost, getUser, getUserPosts } from '../../lib/firebase';
+import IPost from '../../types/Post';
+import IUser from '../../types/User';
 
 type Props = {
     user: IUser | null;

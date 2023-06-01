@@ -1,33 +1,32 @@
-import { auth, db, storage } from '../../firebase';
 import {
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    updateProfile,
     signOut as FirebaseSignOut,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
     updatePassword,
+    updateProfile,
 } from 'firebase/auth';
 import {
-    setDoc,
-    getDoc,
-    doc,
     collection,
-    query,
-    where,
-    getDocs,
-    orderBy,
-    updateDoc,
     deleteDoc,
+    doc,
+    endAt,
+    getDoc,
+    getDocs,
     limit,
+    orderBy,
+    query,
+    setDoc,
     startAfter,
     startAt,
-    endAt,
+    updateDoc,
+    where,
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid';
-
+import { auth, db, storage } from '../../firebase';
+import IComment from '../../types/Comment';
 import IPost from '../../types/Post';
 import IUser from '../../types/User';
-import IComment from '../../types/Comment';
 
 export const signUp = async (username: string, email: string, password: string) => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);

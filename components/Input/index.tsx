@@ -1,6 +1,6 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 
-import { UseFormRegister, FieldValues } from 'react-hook-form';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 type Props = {
     name: string;

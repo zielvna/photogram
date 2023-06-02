@@ -66,11 +66,25 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
     } = useForm();
 
     const registerOptions = {
-        username: { required: 'Username is required.' },
+        username: {
+            required: 'Username is required.',
+            maxLength: {
+                value: 16,
+                message: 'Username is too long.',
+            },
+            pattern: {
+                value: /^[A-Za-z0-9_.]+$/,
+                message: 'You can only use a-z, A-Z, 0-9 and _.',
+            },
+        },
         bio: {
             maxLength: {
                 value: 300,
                 message: 'Bio is too long.',
+            },
+            pattern: {
+                value: /[^ ]/,
+                message: 'Bio is empty.',
             },
         },
     };
@@ -96,7 +110,7 @@ const EditProfilePage: NextPage<Props> = ({ user }) => {
         const { username, bio } = data;
 
         try {
-            await updateUserProfile(username, bio);
+            await updateUserProfile(username, bio.trim());
 
             if (fileRef.current?.files?.[0]) {
                 await updateUserPhoto(fileRef.current.files[0]);

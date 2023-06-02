@@ -35,7 +35,17 @@ const SignUp: NextPage = () => {
     } = useForm();
 
     const registerOptions = {
-        username: { required: 'Username is required.' },
+        username: {
+            required: 'Username is required.',
+            maxLength: {
+                value: 16,
+                message: 'Username is too long.',
+            },
+            pattern: {
+                value: /^[A-Za-z0-9_.]+$/,
+                message: 'Use only a-z, A-Z and 0-9 characters.',
+            },
+        },
         email: {
             required: 'E-mail is required.',
             pattern: {

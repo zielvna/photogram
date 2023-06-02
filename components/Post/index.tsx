@@ -52,6 +52,10 @@ const Post = ({ post, scheme = 'normal' }: Props) => {
                 value: 100,
                 message: 'Comment is too long.',
             },
+            pattern: {
+                value: /[^ ]/,
+                message: 'Comment is empty.',
+            },
         },
     };
 
@@ -61,7 +65,7 @@ const Post = ({ post, scheme = 'normal' }: Props) => {
 
             try {
                 reset();
-                await createComment(post.id, comment);
+                await createComment(post.id, comment.trim());
                 setPostComments(await getPostComments(user.uid, post.id));
                 setPostCommentCount(postComments.length + 1);
             } catch (error) {

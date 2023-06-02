@@ -43,9 +43,14 @@ const CreatePostPage: NextPage = () => {
 
     const registerOptions = {
         description: {
+            required: 'Description is required.',
             maxLength: {
                 value: 200,
                 message: 'Description is too long.',
+            },
+            pattern: {
+                value: /[^ ]/,
+                message: 'Description is empty.',
             },
         },
     };
@@ -92,7 +97,7 @@ const CreatePostPage: NextPage = () => {
         }
 
         try {
-            const postId = await createPost(fileRef.current.files[0], description);
+            const postId = await createPost(fileRef.current.files[0], description.trim());
 
             router.push(`/post/${postId}`);
         } catch (error) {

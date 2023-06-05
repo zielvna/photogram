@@ -129,17 +129,19 @@ export const Header = () => {
                             onClick={closeSearch}
                         />
                         <Search
-                            isOpen={isSearchOpen && searchValue.length > 0}
+                            isOpen={isSearchOpen}
                             isLoading={isLoading}
                             results={searchResults}
                             closeSearch={closeSearch}
                         />
                     </div>
                     <div className={twMerge('w-44 flex justify-end', isSearchOpen && 'hidden md:flex')}>
-                        <RiSearchLine
-                            className="mx-2 text-3xl text-black cursor-pointer md:hidden"
-                            onClick={openSearch}
-                        />
+                        <span>
+                            <RiSearchLine
+                                className="mx-2 text-3xl text-black cursor-pointer md:hidden"
+                                onClick={openSearch}
+                            />
+                        </span>
                         <Link href="/">
                             <RiHomeLine className="mx-2 text-3xl text-black cursor-pointer" />
                         </Link>

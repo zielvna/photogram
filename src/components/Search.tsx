@@ -14,7 +14,7 @@ type Props = {
 export const Search = ({ isOpen, results, isLoading, closeSearch }: Props) => (
     <div
         className={twMerge(
-            'w-full bg-white px-2 rounded-lg fixed inset-0 top-16 md:p-2 md:border md:border-light-gray md:absolute md:top-full md:inset-auto',
+            'bg-white fixed inset-0 top-16 pl-4 md:w-full md:absolute md:inset-auto md:top-full md:border md:border-light-gray md:rounded-lg md:p-2',
             !isOpen && 'hidden'
         )}
     >
@@ -24,7 +24,7 @@ export const Search = ({ isOpen, results, isLoading, closeSearch }: Props) => (
                 <div className="flex items-center cursor-pointer mt-2" onClick={closeSearch}>
                     <NextImage
                         className="rounded-full object-cover"
-                        src={result.photoUrl ? result.photoUrl : '/40.png'}
+                        src={result.photoUrl ? result.photoUrl : '/40x40-empty.png'}
                         width="40"
                         height="40"
                         alt="User avatar."

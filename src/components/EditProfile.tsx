@@ -119,9 +119,9 @@ export const EditProfile = ({ user }: Props) => {
         <Settings name="Edit profile">
             <form onSubmit={onSubmit}>
                 <SettingsField name="Profile photo">
-                    <div className="relative group cursor-pointer">
+                    <div className="w-10 relative group cursor-pointer rounded-full">
                         <div
-                            className="w-10 bg-black/50 text-white rounded-full flex-col items-center justify-center absolute inset-0 hidden group-hover:flex"
+                            className="bg-black/50 text-white rounded-full flex-col items-center justify-center absolute inset-0 hidden group-hover:flex"
                             onClick={openFile}
                         >
                             <input type="file" ref={fileRef} className="hidden" onChange={onSelectFile} />

@@ -1,32 +1,32 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { InputError } from '../components/InputError';
 import { Settings } from '../components/Settings';
 import { SettingsField } from '../components/SettingsField';
 import { changePassword, signOut } from '../lib/firebase';
+import { passwordZod } from '../lib/zod';
 
 export const ChangePassword = () => {
     const [error, setError] = useState('');
     const router = useRouter();
+
+    const schema = z.object({
+        newPassword: passwordZod,
+    });
+
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm();
-
-    const registerOptions = {
-        newPassword: {
-            required: 'New password is required.',
-            minLength: {
-                value: 6,
-                message: 'New password is too short.',
-            },
-        },
-    };
+    } = useForm<z.TypeOf<typeof schema>>({
+        resolver: zodResolver(schema),
+    });
 
     const onSubmit = handleSubmit(async (data) => {
         const { newPassword } = data;
@@ -46,17 +46,11 @@ export const ChangePassword = () => {
         <Settings name="Change password">
             <form onSubmit={onSubmit}>
                 <SettingsField name="New password">
-                    <Input
-                        name="newPassword"
-                        register={register}
-                        validation={registerOptions.newPassword}
-                        type="password"
-                        spellCheck="false"
-                    />
+                    <Input type="password" placeholder="New password" {...register('newPassword')} />
                 </SettingsField>
-                {errors.newPassword && errors.newPassword.message && (
+                {errors.newPassword?.message && (
                     <div className="sm:ml-36">
-                        <InputError>{errors.newPassword.message.toString()}</InputError>
+                        <InputError>{errors.newPassword.message}</InputError>
                     </div>
                 )}
                 <div className="w-32 mt-4 sm:ml-36">

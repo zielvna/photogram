@@ -1,15 +1,18 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
 import NextImage from 'next/future/image';
 import { useRouter } from 'next/router';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RiCamera2Line, RiCloseLine } from 'react-icons/ri';
+import * as z from 'zod';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { InputError } from '../components/InputError';
-import { Textarea } from '../components/Textarea';
 import { useUserContext } from '../contexts/userContext';
 import { createPost } from '../lib/firebase';
+import { descriptionZod } from '../lib/zod';
+import { Textarea } from './Textarea';
 
 export const CreatePost = () => {
     const fileRef = useRef<HTMLInputElement>(null);
@@ -18,26 +21,19 @@ export const CreatePost = () => {
     const [error, setError] = useState('');
     const [fileError, setFileError] = useState('');
     const router = useRouter();
-    const user = useUserContext();
+    const { user } = useUserContext();
+
+    const schema = z.object({
+        description: descriptionZod,
+    });
+
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm();
-
-    const registerOptions = {
-        description: {
-            required: 'Description is required.',
-            maxLength: {
-                value: 200,
-                message: 'Description is too long.',
-            },
-            pattern: {
-                value: /[^ ]/,
-                message: 'Description is empty.',
-            },
-        },
-    };
+    } = useForm<z.TypeOf<typeof schema>>({
+        resolver: zodResolver(schema),
+    });
 
     useEffect(() => {
         if (!selectedFile) {
@@ -123,17 +119,8 @@ export const CreatePost = () => {
                     <p className="text-red-500 text-xs font-bold">{fileError}</p>
                 </div>
                 <div className="w-full mt-4 shrink-0 md:w-80 md:mt-0 md:pl-4">
-                    <Textarea
-                        name="description"
-                        register={register}
-                        validation={registerOptions.description}
-                        rows="5"
-                        placeholder="Description (max 200 characters)"
-                        spellCheck="false"
-                    />
-                    {errors.description && errors.description.message && (
-                        <InputError>{errors.description.message.toString()}</InputError>
-                    )}
+                    <Textarea rows={5} placeholder="Description" {...register('description')} />
+                    {errors.description?.message && <InputError>{errors.description.message}</InputError>}
                     <p className="text-red-500 text-xs font-bold text-center">{error}</p>
                 </div>
             </div>

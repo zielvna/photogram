@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
 import NextImage from 'next/future/image';
 import { useRouter } from 'next/router';
@@ -5,9 +6,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RiMoreLine } from 'react-icons/ri';
 import { twMerge } from 'tailwind-merge';
+import * as z from 'zod';
 import { useUserContext } from '../contexts/userContext';
 import { useDropdown } from '../hooks/useDropdown';
 import { createComment, deletePost, getPostComments, getPostLikesNumber, like } from '../lib/firebase';
+import { commentZod } from '../lib/zod';
 import { IPost } from '../types';
 import { Button } from './Button';
 import { Card } from './Card';
@@ -33,31 +36,24 @@ export const Post = ({ post, scheme = 'normal' }: Props) => {
     const { user } = useUserContext();
     const router = useRouter();
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
+
+    const schema = z.object({
+        comment: commentZod,
+    });
+
     const {
         register,
         handleSubmit,
         reset,
         setFocus,
         formState: { errors },
-    } = useForm();
+    } = useForm<z.TypeOf<typeof schema>>({
+        resolver: zodResolver(schema),
+    });
 
     useEffect(() => {
         setIsPostLiked(post.isLiked ?? false);
     }, [post.isLiked]);
-
-    const registerOptions = {
-        comment: {
-            required: 'Comment is empty.',
-            maxLength: {
-                value: 100,
-                message: 'Comment is too long.',
-            },
-            pattern: {
-                value: /[^ ]/,
-                message: 'Comment is empty.',
-            },
-        },
-    };
 
     const onSubmit = handleSubmit(async (data) => {
         if (user) {
@@ -189,21 +185,12 @@ export const Post = ({ post, scheme = 'normal' }: Props) => {
                         <hr className="text-light-gray my-4" />
                         <form onSubmit={onSubmit}>
                             <div className="flex items-center">
-                                <Input
-                                    name="comment"
-                                    register={register}
-                                    validation={registerOptions.comment}
-                                    type="text"
-                                    placeholder="Add a comment..."
-                                    autoComplete="off"
-                                />
+                                <Input type="text" placeholder="Add a comment..." {...register('comment')} />
                                 <div className="ml-2">
                                     <Button scheme="small">Post</Button>
                                 </div>
                             </div>
-                            {errors.comment && errors.comment.message && (
-                                <InputError>{errors.comment.message.toString()}</InputError>
-                            )}
+                            {errors.comment?.message && <InputError>{errors.comment.message}</InputError>}
                             <p className="text-red-500 text-xs font-bold text-center">{error}</p>
                         </form>
                     </div>

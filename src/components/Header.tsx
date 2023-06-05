@@ -16,7 +16,6 @@ import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { search, signOut } from '../lib/firebase';
 import { IUser } from '../types';
 import { Dropdown } from './Dropdown';
-import { Input } from './Input';
 import { Link } from './Link';
 import { Search } from './Search';
 
@@ -113,10 +112,11 @@ export const Header = () => {
                         ref={searchRef}
                     >
                         <div className={twMerge('w-full md:block', !isSearchOpen && 'hidden')}>
-                            <Input
+                            <input
+                                className="w-full p-2 bg-light-gray rounded-lg outline-0"
                                 name="search"
+                                type="text"
                                 placeholder="Search"
-                                spellCheck="false"
                                 onClick={openSearch}
                                 onChange={inputChange}
                             />

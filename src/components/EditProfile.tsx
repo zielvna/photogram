@@ -1,9 +1,11 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
 import NextImage from 'next/future/image';
 import { useRouter } from 'next/router';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RiCamera2Line } from 'react-icons/ri';
+import * as z from 'zod';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { InputError } from '../components/InputError';
@@ -11,6 +13,7 @@ import { Settings } from '../components/Settings';
 import { SettingsField } from '../components/SettingsField';
 import { Textarea } from '../components/Textarea';
 import { updateUserPhoto, updateUserProfile } from '../lib/firebase';
+import { bioZod, usernameZod } from '../lib/zod';
 import { IUser } from '../types';
 
 type Props = {
@@ -23,40 +26,24 @@ export const EditProfile = ({ user }: Props) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const router = useRouter();
+
+    const schema = z.object({
+        username: usernameZod,
+        bio: bioZod,
+    });
+
     const {
         register,
         handleSubmit,
         formState: { errors },
         setValue,
-    } = useForm();
-
-    const registerOptions = {
-        username: {
-            required: 'Username is required.',
-            maxLength: {
-                value: 16,
-                message: 'Username is too long.',
-            },
-            pattern: {
-                value: /^[A-Za-z0-9_.]+$/,
-                message: 'You can only use a-z, A-Z, 0-9 and _.',
-            },
-        },
-        bio: {
-            maxLength: {
-                value: 300,
-                message: 'Bio is too long.',
-            },
-            pattern: {
-                value: /[^ ]/,
-                message: 'Bio is empty.',
-            },
-        },
-    };
+    } = useForm<z.TypeOf<typeof schema>>({
+        resolver: zodResolver(schema),
+    });
 
     useEffect(() => {
-        setValue('username', user?.username);
-        setValue('bio', user?.bio);
+        setValue('username', user?.username || '');
+        setValue('bio', user?.bio || '');
     }, []);
 
     useEffect(() => {
@@ -112,7 +99,7 @@ export const EditProfile = ({ user }: Props) => {
             return user.photoUrl;
         }
 
-        return '/40.png';
+        return '/40x40-empty.png';
     };
 
     return (
@@ -138,33 +125,21 @@ export const EditProfile = ({ user }: Props) => {
                 </SettingsField>
                 <div className="mt-4">
                     <SettingsField name="Username">
-                        <Input
-                            name="username"
-                            register={register}
-                            validation={registerOptions.username}
-                            type="text"
-                            spellCheck="false"
-                        />
+                        <Input type="text" {...register('username')} />
                     </SettingsField>
-                    {errors.username && errors.username.message && (
+                    {errors.username?.message && (
                         <div className="sm:ml-36">
-                            <InputError>{errors.username.message.toString()}</InputError>
+                            <InputError>{errors.username.message}</InputError>
                         </div>
                     )}
                 </div>
                 <div className="mt-4">
                     <SettingsField name="Bio">
-                        <Textarea
-                            name="bio"
-                            register={register}
-                            validation={registerOptions.bio}
-                            rows="5"
-                            spellCheck="false"
-                        />
+                        <Textarea rows={5} {...register('username')} />
                     </SettingsField>
-                    {errors.bio && errors.bio.message && (
+                    {errors.bio?.message && (
                         <div className="sm:ml-36">
-                            <InputError>{errors.bio.message.toString()}</InputError>
+                            <InputError>{errors.bio.message}</InputError>
                         </div>
                     )}
                 </div>

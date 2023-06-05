@@ -1,26 +1,13 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-
-import { FieldValues, UseFormRegister } from 'react-hook-form';
+import { forwardRef } from 'react';
 
 type Props = {
-    name: string;
-    register?: UseFormRegister<FieldValues>;
-    validation?: object;
-    [props: string]: any;
+    spellCheck?: boolean;
+    placeholder?: string;
+    rows?: number;
 };
 
-export const Textarea = ({ name, register, validation = {}, ...props }: Props) => {
-    let textareaFormProps;
+export const Textarea = forwardRef<HTMLTextAreaElement, Props>(({ ...props }, ref) => (
+    <textarea className="w-full p-2 bg-light-gray rounded-lg outline-0 resize-none" ref={ref} {...props}></textarea>
+));
 
-    if (register) {
-        textareaFormProps = { ...register(name, validation) };
-    }
-
-    return (
-        <textarea
-            className="w-full p-2 bg-light-gray rounded-lg outline-0 resize-none"
-            {...textareaFormProps}
-            {...props}
-        ></textarea>
-    );
-};
+Textarea.displayName = 'Textarea';

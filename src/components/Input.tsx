@@ -1,20 +1,15 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-
-import { FieldValues, UseFormRegister } from 'react-hook-form';
+import { forwardRef } from 'react';
 
 type Props = {
-    name: string;
-    register?: UseFormRegister<FieldValues>;
-    validation?: object;
-    [props: string]: any;
+    type?: string;
+    spellCheck?: boolean;
+    placeholder?: string;
 };
 
-export const Input = ({ name, register, validation = {}, ...props }: Props) => {
-    let inputFormProps;
+const Input = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => (
+    <input className="w-full p-2 bg-light-gray rounded-lg outline-0" ref={ref} {...props} />
+));
 
-    if (register) {
-        inputFormProps = { ...register(name, validation) };
-    }
+Input.displayName = 'Input';
 
-    return <input className="w-full p-2 bg-light-gray rounded-lg outline-0" {...inputFormProps} {...props} />;
-};
+export { Input };

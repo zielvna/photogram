@@ -155,7 +155,7 @@ export const Header = () => {
                                 show={isDropdownOpen}
                                 items={menuItems}
                                 onChange={handleChange}
-                                passRef={dropdownRef}
+                                ref={dropdownRef}
                             />
                         </div>
                     </div>

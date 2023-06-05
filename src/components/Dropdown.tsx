@@ -1,14 +1,15 @@
-import { RefObject } from 'react';
+import { forwardRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 type Props = {
     show: boolean;
-    items: Array<string>;
-    passRef: RefObject<HTMLDivElement>;
+    items: string[];
     onChange: (name: string) => void;
 };
 
-export const Dropdown = ({ show, items, passRef, onChange }: Props) => {
+type Ref = HTMLDivElement;
+
+const Dropdown = forwardRef<Ref, Props>(({ show, items, onChange }, ref) => {
     const itemClick = (name: string) => {
         onChange(name);
     };
@@ -21,7 +22,7 @@ export const Dropdown = ({ show, items, passRef, onChange }: Props) => {
             )}
         >
             <div className="w-full bg-white border border-light-gray self-center rounded-lg cursor-pointer">
-                <div ref={passRef}>
+                <div ref={ref}>
                     {items.map((name) => (
                         <div
                             className="py-2 px-4 border-b border-light-gray"
@@ -36,4 +37,8 @@ export const Dropdown = ({ show, items, passRef, onChange }: Props) => {
             </div>
         </div>
     );
-};
+});
+
+Dropdown.displayName = 'Dropdown';
+
+export { Dropdown };

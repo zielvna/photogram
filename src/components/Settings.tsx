@@ -58,7 +58,7 @@ export const Settings = ({ name, children }: Props) => {
                                 show={isDropdownOpen}
                                 items={['Edit profile', 'Change password']}
                                 onChange={handleChange}
-                                passRef={ref}
+                                ref={ref}
                             />
                         </div>
                     </div>

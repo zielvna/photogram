@@ -1,14 +1,14 @@
 import { RefObject, useState } from 'react';
 import { useOnClickOutside } from './useOnClickOutside';
 
-export const useDropdown = (ref: RefObject<HTMLElement>): [boolean, () => void, () => void] => {
+export const useDropdown = (ref: RefObject<HTMLElement>) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    function openDropdown(): void {
+    function openDropdown() {
         setIsDropdownOpen(true);
     }
 
-    function closeDropdown(): void {
+    function closeDropdown() {
         setIsDropdownOpen(false);
     }
 
@@ -16,5 +16,5 @@ export const useDropdown = (ref: RefObject<HTMLElement>): [boolean, () => void, 
         closeDropdown();
     });
 
-    return [isDropdownOpen, openDropdown, closeDropdown];
+    return [isDropdownOpen, openDropdown, closeDropdown] as const;
 };

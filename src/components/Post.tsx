@@ -150,7 +150,7 @@ export const Post = ({ post, scheme = 'normal' }: Props) => {
             {post.isRemovable && scheme === 'normal' && (
                 <div className="md:relative">
                     <RiMoreLine className="text-3xl text-black cursor-pointer" onClick={openDropdown} />
-                    <Dropdown show={isDropdownOpen} items={['Remove']} onChange={handleChange} passRef={dropdownRef} />
+                    <Dropdown show={isDropdownOpen} items={['Remove']} onChange={handleChange} ref={dropdownRef} />
                 </div>
             )}
         </>

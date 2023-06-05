@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { RiLoader2Line } from 'react-icons/ri';
-import { useUser } from '../hooks/useUser';
+import { useUserContext } from '../contexts/userContext';
 import { getFollowingPagePosts, getPost } from '../lib/firebase';
 import { IPost } from '../types';
 import { Post } from './Post';
@@ -12,7 +12,7 @@ type Props = {
 export const Following = ({ posts }: Props) => {
     const [postsList, setPostsList] = useState(posts);
     const [message, setMessage] = useState('loading');
-    const user = useUser();
+    const { user } = useUserContext();
 
     useEffect(() => {
         if (postsList.length < 3) {

@@ -15,7 +15,7 @@ This is a photo-based social media app inspired by Instagram. You can create pos
 | React Hook Form | Forms              |
 | Nookies         | Cookies            |
 | Moment          | Time conversion    |
-| Classnames      | Conditional styles |
+| Tailwind Merge  | Conditional styles |
 | Yarn            | Package manager    |
 | Eslint          | Linter             |
 | Prettier        | Code formatter     |

@@ -1,5 +1,5 @@
-import classnames from 'classnames';
 import { RefObject } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 type Props = {
     show: boolean;
@@ -15,9 +15,9 @@ export const Dropdown = ({ show, items, passRef, onChange }: Props) => {
 
     return (
         <div
-            className={classnames(
+            className={twMerge(
                 'bg-black/50 px-4 pb-4 flex fixed inset-0 z-10 md:bg-transparent md:px-0 md:pb-0 md:absolute md:inset-auto md:right-0',
-                { hidden: !show }
+                !show && 'hidden'
             )}
         >
             <div className="w-full bg-white border border-light-gray self-center rounded-lg cursor-pointer">

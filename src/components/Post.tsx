@@ -1,12 +1,12 @@
-import classnames from 'classnames';
 import { FirebaseError } from 'firebase/app';
 import NextImage from 'next/future/image';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RiMoreLine } from 'react-icons/ri';
+import { twMerge } from 'tailwind-merge';
+import { useUserContext } from '../contexts/userContext';
 import { useDropdown } from '../hooks/useDropdown';
-import { useUser } from '../hooks/useUser';
 import { createComment, deletePost, getPostComments, getPostLikesNumber, like } from '../lib/firebase';
 import { IPost } from '../types';
 import { Button } from './Button';
@@ -30,7 +30,7 @@ export const Post = ({ post, scheme = 'normal' }: Props) => {
     const [postLikeCount, setPostLikeCount] = useState(post.stats?.likes ?? 0);
     const [postCommentCount, setPostCommentCount] = useState(post.stats?.comments ?? 0);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const user = useUser();
+    const { user } = useUserContext();
     const router = useRouter();
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
     const {
@@ -85,7 +85,7 @@ export const Post = ({ post, scheme = 'normal' }: Props) => {
 
     const generateComments = () => {
         return postComments.map((comment, index) => (
-            <div className={classnames({ 'mt-4': index != 0 })} key={comment.id}>
+            <div className={twMerge(index != 0 && 'mt-4')} key={comment.id}>
                 <PostComment
                     id={comment.id}
                     user={comment.author}
@@ -170,14 +170,11 @@ export const Post = ({ post, scheme = 'normal' }: Props) => {
 
     return (
         <Card>
-            <div className={classnames({ 'md:flex': scheme === 'normal' })}>
-                <div className={classnames('flex justify-between items-center', { 'md:hidden': scheme === 'normal' })}>
+            <div className={twMerge(scheme === 'normal' && 'md:flex')}>
+                <div className={twMerge('flex justify-between items-center', scheme === 'normal' && 'md:hidden')}>
                     {description}
                 </div>
-                <div
-                    onClick={photoClick}
-                    className={classnames('mt-4 cursor-pointer', { 'md:mt-0': scheme === 'normal' })}
-                >
+                <div onClick={photoClick} className={twMerge('mt-4 cursor-pointer', scheme === 'normal' && 'md:mt-0')}>
                     <NextImage className="rounded-lg" src={post.photoUrl} width="640" height="640" alt="Post image." />
                 </div>
                 {scheme === 'normal' && (

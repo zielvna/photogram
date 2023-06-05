@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { RiLoader2Line } from 'react-icons/ri';
 import { Post } from '../components/Post';
-import { useUser } from '../hooks/useUser';
+import { useUserContext } from '../contexts/userContext';
 import { getHomePagePosts, getPost } from '../lib/firebase';
 import { IPost } from '../types';
 
@@ -12,7 +12,7 @@ type Props = {
 export const Home = ({ posts }: Props) => {
     const [postsList, setPostsList] = useState(posts);
     const [message, setMessage] = useState('loading');
-    const user = useUser();
+    const { user } = useUserContext();
 
     useEffect(() => {
         if (postsList.length < 3) {

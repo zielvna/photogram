@@ -8,7 +8,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { InputError } from '../components/InputError';
 import { Textarea } from '../components/Textarea';
-import { useUser } from '../hooks/useUser';
+import { useUserContext } from '../contexts/userContext';
 import { createPost } from '../lib/firebase';
 
 export const CreatePost = () => {
@@ -18,7 +18,7 @@ export const CreatePost = () => {
     const [error, setError] = useState('');
     const [fileError, setFileError] = useState('');
     const router = useRouter();
-    const user = useUser();
+    const user = useUserContext();
     const {
         register,
         handleSubmit,

@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -10,9 +9,10 @@ import {
     RiSearchLine,
     RiUserLine,
 } from 'react-icons/ri';
+import { twMerge } from 'tailwind-merge';
+import { useUserContext } from '../contexts/userContext';
 import { useDropdown } from '../hooks/useDropdown';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
-import { useUser } from '../hooks/useUser';
 import { search, signOut } from '../lib/firebase';
 import { IUser } from '../types';
 import { Dropdown } from './Dropdown';
@@ -28,7 +28,7 @@ export const Header = () => {
     const searchRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const user = useUser();
+    const { user } = useUserContext();
     const router = useRouter();
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
 
@@ -101,20 +101,18 @@ export const Header = () => {
 
     return (
         <header className="relative z-10">
-            <div
-                className={classnames('h-16 flex justify-center bg-white', { 'fixed inset-0 md:static': isSearchOpen })}
-            >
+            <div className={twMerge('h-16 flex justify-center bg-white', isSearchOpen && 'fixed inset-0 md:static')}>
                 <div className="w-full max-w-5xl px-4 flex items-center justify-between">
-                    <div className={classnames('w-44', { 'hidden md:block': isSearchOpen })}>
+                    <div className={twMerge('w-44', isSearchOpen && 'hidden md:block')}>
                         <Link href="/">
                             <RiCamera2Line className="text-3xl text-black cursor-pointer" />
                         </Link>
                     </div>
                     <div
-                        className={classnames('flex items-center md:w-80 md:relative z-10', { 'w-full': isSearchOpen })}
+                        className={twMerge('flex items-center md:w-80 md:relative z-10', isSearchOpen && 'w-full')}
                         ref={searchRef}
                     >
-                        <div className={classnames('w-full md:block', { hidden: !isSearchOpen })}>
+                        <div className={twMerge('w-full md:block', !isSearchOpen && 'hidden')}>
                             <Input
                                 name="search"
                                 placeholder="Search"
@@ -124,9 +122,10 @@ export const Header = () => {
                             />
                         </div>
                         <RiCloseLine
-                            className={classnames('ml-2 text-3xl text-black shrink-0 cursor-pointer md:hidden', {
-                                hidden: !isSearchOpen,
-                            })}
+                            className={twMerge(
+                                'ml-2 text-3xl text-black shrink-0 cursor-pointer md:hidden',
+                                !isSearchOpen && 'hidden'
+                            )}
                             onClick={closeSearch}
                         />
                         <Search
@@ -136,7 +135,7 @@ export const Header = () => {
                             closeSearch={closeSearch}
                         />
                     </div>
-                    <div className={classnames('w-44 flex justify-end', { 'hidden md:flex': isSearchOpen })}>
+                    <div className={twMerge('w-44 flex justify-end', isSearchOpen && 'hidden md:flex')}>
                         <RiSearchLine
                             className="mx-2 text-3xl text-black cursor-pointer md:hidden"
                             onClick={openSearch}

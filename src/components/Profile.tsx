@@ -2,7 +2,7 @@ import { FirebaseError } from 'firebase/app';
 import NextImage from 'next/future/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useUser } from '../hooks/useUser';
+import { useUserContext } from '../contexts/userContext';
 import { follow, getUserFollowers } from '../lib/firebase';
 import { IPost, IUser } from '../types';
 import { Button } from './Button';
@@ -18,7 +18,7 @@ export const Profile = ({ user, posts }: Props) => {
     const [isUserFollowed, setIsUserFollowed] = useState(user.isFollowed);
     const [userFollowerCount, setUserFollowerCount] = useState(user.stats?.followers);
     const [error, setError] = useState('');
-    const authUser = useUser();
+    const authUser = useUserContext();
     const router = useRouter();
 
     useEffect(() => {

@@ -9,7 +9,6 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "classnames": "^2.3.2",
         "firebase": "^9.10.0",
         "firebase-admin": "^11.5.0",
         "moment": "^2.29.4",
@@ -19,6 +18,7 @@
         "react-dom": "18.2.0",
         "react-hook-form": "^7.36.1",
         "react-icons": "^4.4.0",
+        "tailwind-merge": "^1.13.0",
         "uuid": "^9.0.0"
     },
     "devDependencies": {

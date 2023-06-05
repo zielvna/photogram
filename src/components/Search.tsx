@@ -1,7 +1,7 @@
-import classnames from 'classnames';
 import NextImage from 'next/image';
 import Link from 'next/link';
 import { RiLoader2Line } from 'react-icons/ri';
+import { twMerge } from 'tailwind-merge';
 import { IUser } from '../types';
 
 type Props = {
@@ -13,9 +13,9 @@ type Props = {
 
 export const Search = ({ isOpen, results, isLoading, closeSearch }: Props) => (
     <div
-        className={classnames(
+        className={twMerge(
             'w-full bg-white px-2 rounded-lg fixed inset-0 top-16 md:p-2 md:border md:border-light-gray md:absolute md:top-full md:inset-auto',
-            { hidden: !isOpen }
+            !isOpen && 'hidden'
         )}
     >
         {!results.length && !isLoading && <div className="flex justify-center">User not found.</div>}

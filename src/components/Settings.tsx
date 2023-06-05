@@ -1,7 +1,7 @@
-import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import { RiMoreLine } from 'react-icons/ri';
+import { twMerge } from 'tailwind-merge';
 import { useDropdown } from '../hooks/useDropdown';
 import { Card } from './Card';
 import { Dropdown } from './Dropdown';
@@ -41,9 +41,7 @@ export const Settings = ({ name, children }: Props) => {
                 <div className="hidden sm:block sm:pr-4 sm:border-r sm:border-light-gray">
                     {tabs.map((tab) => (
                         <Link
-                            className={classnames('w-32 block cursor-pointer sm:py-3', {
-                                'font-bold': tab.name === name,
-                            })}
+                            className={twMerge('w-32 block cursor-pointer sm:py-3', tab.name === name && 'font-bold')}
                             href={tab.id}
                             key={tab.id}
                         >

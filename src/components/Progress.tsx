@@ -1,6 +1,6 @@
-import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export const Progress = () => {
     const progressRef = useRef<HTMLDivElement>(null);
@@ -49,7 +49,7 @@ export const Progress = () => {
 
     return (
         <div className="h-[3px] bg-white">
-            <div className={classnames('h-[3px] bg-blue w-0', { 'duration-200': isLoading })} ref={progressRef}></div>
+            <div className={twMerge('h-[3px] bg-blue w-0', isLoading && 'duration-200')} ref={progressRef}></div>
         </div>
     );
 };

@@ -3,7 +3,7 @@ import nookies from 'nookies';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebase';
 
-interface UserContextValue {
+export interface UserContextValue {
     user: FirebaseUser | null | undefined;
 }
 

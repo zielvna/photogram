@@ -20,7 +20,7 @@ import {
     updateDoc,
     where,
 } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid';
 import { auth, db, storage } from '../firebase';
 import { IComment, IPost, IUser } from '../types';
@@ -44,30 +44,36 @@ export const signOut = async () => {
 };
 
 export const changePassword = async (newPassword: string) => {
-    if (auth.currentUser) {
-        await updatePassword(auth.currentUser, newPassword);
+    if (!auth.currentUser) {
+        return;
     }
+
+    await updatePassword(auth.currentUser, newPassword);
 };
 
 export const updateUserPhoto = async (newPhoto: File) => {
-    if (auth.currentUser) {
-        const imageRef = ref(storage, `users/${auth.currentUser.uid}`);
-        const snapshot = await uploadBytes(imageRef, newPhoto);
-        const photoUrl = await getDownloadURL(snapshot.ref);
-
-        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
-            photoUrl,
-        });
+    if (!auth.currentUser) {
+        return;
     }
+
+    const imageRef = ref(storage, `users/${auth.currentUser.uid}`);
+    const snapshot = await uploadBytes(imageRef, newPhoto);
+    const photoUrl = await getDownloadURL(snapshot.ref);
+
+    await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        photoUrl,
+    });
 };
 
 export const updateUserProfile = async (newUsername: string, newBio: string) => {
-    if (auth.currentUser) {
-        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
-            username: newUsername,
-            bio: newBio,
-        });
+    if (!auth.currentUser) {
+        return;
     }
+
+    await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        username: newUsername,
+        bio: newBio,
+    });
 };
 
 export const createPost = async (photo: File, description: string) => {
@@ -93,6 +99,9 @@ export const createPost = async (photo: File, description: string) => {
 };
 
 export const deletePost = async (postId: string) => {
+    const photoRef = ref(storage, `posts/${postId}`);
+    await deleteObject(photoRef);
+
     await deleteDoc(doc(db, 'posts', postId));
 };
 
@@ -117,10 +126,12 @@ export const deleteComment = async (commentId: string) => {
 };
 
 export const like = async (postId: string, status: boolean) => {
-    const uid = auth.currentUser?.uid;
+    if (!auth.currentUser) {
+        return;
+    }
 
     const likesRef = collection(db, 'likes');
-    const q = query(likesRef, where('postId', '==', postId), where('userId', '==', uid));
+    const q = query(likesRef, where('postId', '==', postId), where('userId', '==', auth.currentUser.uid));
 
     const likes = await getDocs(q);
 
@@ -139,17 +150,19 @@ export const like = async (postId: string, status: boolean) => {
 
         await setDoc(doc(db, 'likes', id), {
             postId,
-            userId: uid,
+            userId: auth.currentUser.uid,
             status,
         });
     }
 };
 
 export const follow = async (userId: string, status: boolean) => {
-    const uid = auth.currentUser?.uid;
+    if (!auth.currentUser) {
+        return;
+    }
 
     const followsRef = collection(db, 'follows');
-    const q = query(followsRef, where('userId', '==', userId), where('followerId', '==', uid));
+    const q = query(followsRef, where('userId', '==', userId), where('followerId', '==', auth.currentUser.uid));
 
     const follows = await getDocs(q);
 
@@ -168,7 +181,7 @@ export const follow = async (userId: string, status: boolean) => {
 
         await setDoc(doc(db, 'follows', id), {
             userId,
-            followerId: uid,
+            followerId: auth.currentUser.uid,
             status,
         });
     }

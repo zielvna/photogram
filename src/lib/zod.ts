@@ -12,11 +12,7 @@ export const passwordZod = z
     .min(6, { message: 'Password is too short.' })
     .max(32, { message: 'Password is too long.' });
 
-export const descriptionZod = z
-    .string()
-    .trim()
-    .min(1, { message: 'Description is too short.' })
-    .max(200, { message: 'Description is too long.' });
+export const descriptionZod = z.string().trim().max(200, { message: 'Description is too long.' });
 
 export const commentZod = z
     .string()
@@ -24,8 +20,4 @@ export const commentZod = z
     .min(1, { message: 'Comment is too short.' })
     .max(100, { message: 'Comment is too long.' });
 
-export const bioZod = z
-    .string()
-    .trim()
-    .min(1, { message: 'Bio is too short.' })
-    .max(200, { message: 'Bio is too long.' });
+export const bioZod = z.string().trim().max(200, { message: 'Bio is too long.' });

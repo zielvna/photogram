@@ -36,7 +36,6 @@ export const SignUp = () => {
 
         try {
             await signUp(username, email, password);
-            router.push('/');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 setError(error.message);

@@ -2,10 +2,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import nookies from 'nookies';
 import { Following } from '../components/Following';
-import { Header } from '../components/Header';
 import { PrivateRoute } from '../components/PrivateRoute';
-import { Progress } from '../components/Progress';
-import { Wrapper } from '../components/Wrapper';
 import { auth } from '../firebaseAdmin';
 import { getFollowingPagePosts, getPost } from '../lib/firebase';
 import { IPost } from '../types';
@@ -49,11 +46,7 @@ const FollowingPage: NextPage<Props> = ({ posts }) => (
         <Head>
             <title>Photogram - Following</title>
         </Head>
-        <Progress />
-        <Header />
-        <Wrapper>
-            <Following posts={posts} />
-        </Wrapper>
+        <Following posts={posts} />
     </PrivateRoute>
 );
 

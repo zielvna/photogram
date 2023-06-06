@@ -1,10 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import nookies from 'nookies';
-import { Header } from '../../components/Header';
 import { Profile } from '../../components/Profile';
-import { Progress } from '../../components/Progress';
-import { Wrapper } from '../../components/Wrapper';
 import { auth } from '../../firebaseAdmin';
 import { getPost, getUser, getUserPosts } from '../../lib/firebase';
 import { IPost, IUser } from '../../types';
@@ -63,13 +60,9 @@ const ProfilePage: NextPage<Props> = ({ user, posts }) => (
         <Head>
             <title>Photogram - User ({user?.username})</title>
         </Head>
-        <Progress />
-        <Header />
-        <Wrapper>
-            <div className="w-full mt-4">
-                {user ? <Profile user={user} posts={posts} /> : <p className="flex justify-center">User not found.</p>}
-            </div>
-        </Wrapper>
+        <div className="w-full mt-4">
+            {user ? <Profile user={user} posts={posts} /> : <p className="flex justify-center">User not found.</p>}
+        </div>
     </>
 );
 

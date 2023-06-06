@@ -1,10 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import nookies from 'nookies';
-import { Header } from '../../components/Header';
 import { Post } from '../../components/Post';
-import { Progress } from '../../components/Progress';
-import { Wrapper } from '../../components/Wrapper';
 import { auth } from '../../firebaseAdmin';
 import { getPost } from '../../lib/firebase';
 import { IPost } from '../../types';
@@ -46,11 +43,7 @@ const PostPage: NextPage<Props> = ({ post }) => (
         <Head>
             <title>Photogram - Post {post?.description ? `(${post.description})` : 'not found'}</title>
         </Head>
-        <Progress />
-        <Header />
-        <Wrapper>
-            <div className="mt-4">{post ? <Post post={post} scheme="normal" /> : <p>Post not found.</p>}</div>
-        </Wrapper>
+        <div className="mt-4">{post ? <Post post={post} scheme="normal" /> : <p>Post not found.</p>}</div>
     </>
 );
 

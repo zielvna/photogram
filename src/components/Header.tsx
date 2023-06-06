@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -16,7 +17,6 @@ import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { search, signOut } from '../lib/firebase';
 import { IUser } from '../types';
 import { Dropdown } from './Dropdown';
-import { Link } from './Link';
 import { Search } from './Search';
 
 export const Header = () => {

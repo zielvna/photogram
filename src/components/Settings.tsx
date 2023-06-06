@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import { RiMoreLine } from 'react-icons/ri';
@@ -5,7 +6,6 @@ import { twMerge } from 'tailwind-merge';
 import { useDropdown } from '../hooks/useDropdown';
 import { Card } from './Card';
 import { Dropdown } from './Dropdown';
-import { Link } from './Link';
 
 type Props = {
     name: string;

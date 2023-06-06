@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,7 +10,6 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Input } from '../components/Input';
 import { InputError } from '../components/InputError';
-import { Link } from '../components/Link';
 import { signIn } from '../lib/firebase';
 import { emailZod, passwordZod } from '../lib/zod';
 

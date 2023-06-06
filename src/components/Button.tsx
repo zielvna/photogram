@@ -1,29 +1,14 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
+const schemas = {
+    normal: 'w-full py-2 bg-blue text-white font-bold rounded-lg border border-white',
+    inverse: 'w-full py-2 bg-white text-blue font-bold rounded-lg border border-blue',
+    small: 'text-blue font-bold',
+} as const;
 
-type Props = {
-    scheme?: 'normal' | 'inverse' | 'small';
-    children: React.ReactNode;
-    [props: string]: any;
-};
+type ButtonProps = Readonly<{
+    scheme?: keyof typeof schemas;
+}> &
+    JSX.IntrinsicElements['button'];
 
-export const Button = ({ children, scheme = 'normal', ...props }: Props) => {
-    let buttonStyles;
-
-    switch (scheme) {
-        case 'normal':
-            buttonStyles = 'w-full py-2 bg-blue text-white font-bold rounded-lg border border-white';
-            break;
-        case 'inverse':
-            buttonStyles = 'w-full py-2 bg-white text-blue font-bold rounded-lg border border-blue';
-            break;
-        case 'small':
-            buttonStyles = 'text-blue font-bold';
-            break;
-    }
-
-    return (
-        <button className={buttonStyles} {...props}>
-            {children}
-        </button>
-    );
-};
+export const Button = ({ scheme = 'normal', ...props }: ButtonProps) => (
+    <button className={schemas[scheme]} {...props} />
+);

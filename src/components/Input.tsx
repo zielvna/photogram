@@ -4,6 +4,7 @@ type Props = {
     type?: string;
     spellCheck?: boolean;
     placeholder?: string;
+    defaultValue?: string;
 };
 
 const Input = forwardRef<HTMLInputElement, Props>(({ ...props }, ref) => (

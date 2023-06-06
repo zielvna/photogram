@@ -2,6 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 import nookies from 'nookies';
 import { EditProfile } from '../../components/EditProfile';
 import { Header } from '../../components/Header';
+import { PrivateRoute } from '../../components/PrivateRoute';
 import { Progress } from '../../components/Progress';
 import { Wrapper } from '../../components/Wrapper';
 import { auth } from '../../firebaseAdmin';
@@ -14,11 +15,6 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
     const cookies = nookies.get(context);
-
-    if (!cookies.token) {
-        context.res.setHeader('location', '/login');
-        context.res.statusCode = 302;
-    }
 
     let loggedUserId = null;
 
@@ -42,7 +38,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 };
 
 const EditProfilePage: NextPage<Props> = ({ user }) => (
-    <>
+    <PrivateRoute>
         <Progress />
         <Header />
         <Wrapper>
@@ -50,7 +46,7 @@ const EditProfilePage: NextPage<Props> = ({ user }) => (
                 <EditProfile user={user} />
             </div>
         </Wrapper>
-    </>
+    </PrivateRoute>
 );
 
 export default EditProfilePage;

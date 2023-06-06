@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
-import NextImage from 'next/future/image';
+import NextImage from 'next/image';
 import { useRouter } from 'next/router';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -36,15 +36,9 @@ export const EditProfile = ({ user }: Props) => {
         register,
         handleSubmit,
         formState: { errors },
-        setValue,
     } = useForm<z.TypeOf<typeof schema>>({
         resolver: zodResolver(schema),
     });
-
-    useEffect(() => {
-        setValue('username', user?.username || '');
-        setValue('bio', user?.bio || '');
-    }, []);
 
     useEffect(() => {
         if (!selectedFile) {
@@ -125,7 +119,7 @@ export const EditProfile = ({ user }: Props) => {
                 </SettingsField>
                 <div className="mt-4">
                     <SettingsField name="Username">
-                        <Input type="text" {...register('username')} />
+                        <Input type="text" defaultValue={user?.username} {...register('username')} />
                     </SettingsField>
                     {errors.username?.message && (
                         <div className="sm:ml-36">
@@ -135,7 +129,7 @@ export const EditProfile = ({ user }: Props) => {
                 </div>
                 <div className="mt-4">
                     <SettingsField name="Bio">
-                        <Textarea rows={5} {...register('username')} />
+                        <Textarea rows={5} defaultValue={user?.bio} {...register('bio')} />
                     </SettingsField>
                     {errors.bio?.message && (
                         <div className="sm:ml-36">

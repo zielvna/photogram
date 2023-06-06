@@ -1,7 +1,7 @@
 import moment from 'moment';
 import NextImage from 'next/image';
+import Link from 'next/link';
 import { IUser } from '../types';
-import { Link } from './Link';
 
 type Props = {
     user: IUser;

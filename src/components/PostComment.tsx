@@ -1,8 +1,8 @@
 import moment from 'moment';
 import NextImage from 'next/image';
+import Link from 'next/link';
 import { deleteComment } from '../lib/firebase';
 import { IUser } from '../types';
-import { Link } from './Link';
 
 type Props = {
     id: string;

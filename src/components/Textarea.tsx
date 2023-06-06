@@ -4,6 +4,7 @@ type Props = {
     spellCheck?: boolean;
     placeholder?: string;
     rows?: number;
+    defaultValue?: string;
 };
 
 export const Textarea = forwardRef<HTMLTextAreaElement, Props>(({ ...props }, ref) => (

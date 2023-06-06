@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
 import NextImage from 'next/image';
 import { useRouter } from 'next/router';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RiCamera2Line } from 'react-icons/ri';
 import * as z from 'zod';
@@ -12,6 +12,7 @@ import { InputError } from '../components/InputError';
 import { Settings } from '../components/Settings';
 import { SettingsField } from '../components/SettingsField';
 import { Textarea } from '../components/Textarea';
+import { useFile } from '../hooks/useFile';
 import { updateUserPhoto, updateUserProfile } from '../lib/firebase';
 import { bioZod, usernameZod } from '../lib/zod';
 import { IUser } from '../types';
@@ -23,8 +24,7 @@ type Props = {
 export const EditProfile = ({ user }: Props) => {
     const [error, setError] = useState('');
     const fileRef = useRef<HTMLInputElement>(null);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [preview, setPreview] = useState<string | null>(null);
+    const [preview, selectedFile, openFile] = useFile(fileRef);
     const router = useRouter();
 
     const schema = z.object({
@@ -40,26 +40,14 @@ export const EditProfile = ({ user }: Props) => {
         resolver: zodResolver(schema),
     });
 
-    useEffect(() => {
-        if (!selectedFile) {
-            setPreview(null);
-            return;
-        }
-
-        const fileUrl = URL.createObjectURL(selectedFile);
-        setPreview(fileUrl);
-
-        return () => URL.revokeObjectURL(fileUrl);
-    }, [selectedFile]);
-
     const onSubmit = handleSubmit(async (data) => {
         const { username, bio } = data;
 
         try {
             await updateUserProfile(username, bio.trim());
 
-            if (fileRef.current?.files?.[0]) {
-                await updateUserPhoto(fileRef.current.files[0]);
+            if (selectedFile) {
+                await updateUserPhoto(selectedFile);
             }
 
             router.push(`/user/${user?.id}`);
@@ -69,20 +57,6 @@ export const EditProfile = ({ user }: Props) => {
             }
         }
     });
-
-    const onSelectFile = (e: FormEvent<HTMLInputElement>) => {
-        const target = e.target as HTMLInputElement;
-
-        if (target.files) {
-            setSelectedFile(target.files[0]);
-        }
-    };
-
-    const openFile = () => {
-        if (fileRef.current) {
-            fileRef.current.click();
-        }
-    };
 
     const getProfilePhoto = () => {
         if (preview) {
@@ -105,7 +79,7 @@ export const EditProfile = ({ user }: Props) => {
                             className="bg-black/50 text-white rounded-full flex-col items-center justify-center absolute inset-0 hidden group-hover:flex"
                             onClick={openFile}
                         >
-                            <input type="file" ref={fileRef} className="hidden" onChange={onSelectFile} />
+                            <input type="file" ref={fileRef} className="hidden" />
                             <RiCamera2Line className="text-xl" />
                         </div>
                         <NextImage

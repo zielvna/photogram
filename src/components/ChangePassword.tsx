@@ -46,7 +46,7 @@ export const ChangePassword = () => {
         <Settings name="Change password">
             <form onSubmit={onSubmit}>
                 <SettingsField name="New password">
-                    <Input type="password" placeholder="New password" {...register('newPassword')} />
+                    <Input type="password" {...register('newPassword')} />
                 </SettingsField>
                 {errors.newPassword?.message && (
                     <div className="sm:ml-36">

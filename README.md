@@ -6,19 +6,21 @@ This is a photo-based social media app inspired by Instagram. You can create pos
 
 ## Technologies 🔧
 
-| Tech            | Use                |
-| --------------- | ------------------ |
-| Next            | Framework & SSR    |
-| Typescript      | Language           |
-| Firebase        | Backend & platform |
-| Tailwind        | CSS                |
-| React Hook Form | Forms              |
-| Nookies         | Cookies            |
-| Moment          | Time conversion    |
-| Tailwind Merge  | Conditional styles |
-| Yarn            | Package manager    |
-| Eslint          | Linter             |
-| Prettier        | Code formatter     |
+| Tech            | Use                  |
+| --------------- | -------------------- |
+| Next            | Framework & SSR      |
+| Typescript      | Language             |
+| Firebase        | Backend & platform   |
+| Tailwind        | CSS                  |
+| React Hook Form | Forms                |
+| Zod             | Validation           |
+| Nookies         | Cookies              |
+| Vercel          | Deployment & hosting |
+| Moment          | Time conversion      |
+| Tailwind Merge  | Conditional styles   |
+| Yarn            | Package manager      |
+| Eslint          | Linter               |
+| Prettier        | Code formatter       |
 
 ## Preview 👀
 

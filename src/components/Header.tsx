@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import {
     RiAddBoxLine,
     RiCamera2Line,
@@ -13,70 +13,28 @@ import {
 import { twMerge } from 'tailwind-merge';
 import { useUserContext } from '../contexts/userContext';
 import { useDropdown } from '../hooks/useDropdown';
-import { useOnClickOutside } from '../hooks/useOnClickOutside';
-import { search, signOut } from '../lib/firebase';
-import { IUser } from '../types';
+import { useSearch } from '../hooks/useSearch';
+import { signOut } from '../lib/firebase';
 import { Dropdown } from './Dropdown';
 import { Search } from './Search';
 
 export const Header = () => {
-    const [searchValue, setSearchValue] = useState('');
-    const [searchResults, setSearchResults] = useState<IUser[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { user } = useUserContext();
     const router = useRouter();
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
+    const [openSearch, closeSearch, inputChange, searchResults, isSearchOpen, isLoading] = useSearch(
+        searchRef,
+        inputRef
+    );
 
     let menuItems = ['Login', 'Signup'];
 
     if (user) {
         menuItems = ['Profile', 'Settings', 'Logout'];
     }
-
-    useEffect(() => {
-        let timeout: NodeJS.Timeout;
-
-        if (!searchValue.length) {
-            setSearchResults([]);
-        }
-
-        if (isSearchOpen && searchValue.length > 0) {
-            setIsLoading(true);
-            setSearchResults([]);
-
-            timeout = setTimeout(async () => {
-                const results = await search(searchValue);
-                setSearchResults(results);
-                setIsLoading(false);
-            }, 1000);
-        }
-
-        return () => {
-            if (timeout) {
-                clearTimeout(timeout);
-            }
-        };
-    }, [isSearchOpen, searchValue]);
-
-    useOnClickOutside(searchRef, () => {
-        setIsSearchOpen(false);
-    });
-
-    const openSearch = () => {
-        setIsSearchOpen(true);
-    };
-
-    const closeSearch = () => {
-        setIsSearchOpen(false);
-    };
-
-    const inputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchValue(e.target.value);
-        openSearch();
-    };
 
     const handleChange = async (name: string) => {
         switch (name) {

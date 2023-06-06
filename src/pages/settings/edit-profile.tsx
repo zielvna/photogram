@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
+import Head from 'next/head';
 import nookies from 'nookies';
 import { EditProfile } from '../../components/EditProfile';
 import { Header } from '../../components/Header';
@@ -39,6 +40,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
 const EditProfilePage: NextPage<Props> = ({ user }) => (
     <PrivateRoute>
+        <Head>
+            <title>Photogram - Settings (Edit Profile)</title>
+        </Head>
         <Progress />
         <Header />
         <Wrapper>

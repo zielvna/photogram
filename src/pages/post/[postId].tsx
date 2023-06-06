@@ -1,4 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next';
+import Head from 'next/head';
 import nookies from 'nookies';
 import { Header } from '../../components/Header';
 import { Post } from '../../components/Post';
@@ -42,6 +43,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
 const PostPage: NextPage<Props> = ({ post }) => (
     <>
+        <Head>
+            <title>Photogram - Post {post?.description ? `(${post.description})` : 'not found'}</title>
+        </Head>
         <Progress />
         <Header />
         <Wrapper>

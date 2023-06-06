@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import Head from 'next/head';
 import { ChangePassword } from '../../components/ChangePassword';
 import { Header } from '../../components/Header';
 import { PrivateRoute } from '../../components/PrivateRoute';
@@ -7,6 +8,9 @@ import { Wrapper } from '../../components/Wrapper';
 
 const ChangePasswordPage: NextPage = () => (
     <PrivateRoute>
+        <Head>
+            <title>Photogram - Settings (Change Password)</title>
+        </Head>
         <Progress />
         <Header />
         <Wrapper>

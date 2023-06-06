@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
+import Head from 'next/head';
 import nookies from 'nookies';
 import { Header } from '../../components/Header';
 import { Profile } from '../../components/Profile';
@@ -27,9 +28,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
     const userId = context.params?.userId as string;
 
-    const user = await getUser(loggedUserId, userId, true, true);
+    let user = null;
 
-    const postIds = await getUserPosts(userId);
+    let postIds: string[] = [];
+
+    try {
+        user = await getUser(loggedUserId, userId, true, true);
+
+        postIds = await getUserPosts(userId);
+    } catch (error) {
+        user = null;
+    }
 
     const posts: IPost[] = [];
 
@@ -51,10 +60,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
 const ProfilePage: NextPage<Props> = ({ user, posts }) => (
     <>
+        <Head>
+            <title>Photogram - User ({user?.username})</title>
+        </Head>
         <Progress />
         <Header />
         <Wrapper>
-            <div className="w-full mt-4">{user ? <Profile user={user} posts={posts} /> : <p>User not found.</p>}</div>
+            <div className="w-full mt-4">
+                {user ? <Profile user={user} posts={posts} /> : <p className="flex justify-center">User not found.</p>}
+            </div>
         </Wrapper>
     </>
 );

@@ -77,6 +77,7 @@ export const Header = () => {
                                 name="search"
                                 type="text"
                                 placeholder="Search"
+                                autoComplete="off"
                                 onClick={openSearch}
                                 onChange={inputChange}
                             />

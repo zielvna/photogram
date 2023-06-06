@@ -1,4 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next';
+import Head from 'next/head';
 import nookies from 'nookies';
 import { Header } from '../components/Header';
 import { Home } from '../components/Home';
@@ -45,6 +46,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
 const HomePage: NextPage<Props> = ({ posts }) => (
     <>
+        <Head>
+            <title>Photogram - Home</title>
+        </Head>
         <Progress />
         <Header />
         <Wrapper>

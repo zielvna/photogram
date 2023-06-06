@@ -10,7 +10,7 @@ export const PublicRoute = ({ children }: Props) => {
     const router = useRouter();
 
     if (user) {
-        router.push('/');
+        router.replace('/');
     }
 
     return <div>{children}</div>;

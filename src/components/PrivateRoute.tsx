@@ -10,7 +10,7 @@ export const PrivateRoute = ({ children }: Props) => {
     const router = useRouter();
 
     if (user === null) {
-        router.push('/login');
+        router.replace('/login');
     }
 
     return <div>{children}</div>;

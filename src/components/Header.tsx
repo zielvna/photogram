@@ -20,7 +20,6 @@ import { Dropdown } from './Dropdown';
 import { Search } from './Search';
 
 export const Header = () => {
-    const [menuItems, setMenuItems] = useState(['Login']);
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState<IUser[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -31,11 +30,11 @@ export const Header = () => {
     const router = useRouter();
     const [isDropdownOpen, openDropdown, closeDropdown] = useDropdown(dropdownRef);
 
-    useEffect(() => {
-        if (user) {
-            setMenuItems(['Profile', 'Settings', 'Logout']);
-        }
-    }, [user]);
+    let menuItems = ['Login', 'Signup'];
+
+    if (user) {
+        menuItems = ['Profile', 'Settings', 'Logout'];
+    }
 
     useEffect(() => {
         let timeout: NodeJS.Timeout;
@@ -83,6 +82,9 @@ export const Header = () => {
         switch (name) {
             case 'Login':
                 router.push('/login');
+                break;
+            case 'Signup':
+                router.push('/signup');
                 break;
             case 'Profile':
                 router.push(`/user/${user?.uid}`);

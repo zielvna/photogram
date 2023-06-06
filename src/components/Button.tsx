@@ -4,11 +4,9 @@ const schemas = {
     small: 'text-blue font-bold',
 } as const;
 
-type ButtonProps = Readonly<{
+type Props = Readonly<{
     scheme?: keyof typeof schemas;
 }> &
     JSX.IntrinsicElements['button'];
 
-export const Button = ({ scheme = 'normal', ...props }: ButtonProps) => (
-    <button className={schemas[scheme]} {...props} />
-);
+export const Button = ({ scheme = 'normal', ...props }: Props) => <button className={schemas[scheme]} {...props} />;

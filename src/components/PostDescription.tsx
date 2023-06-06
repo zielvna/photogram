@@ -14,7 +14,7 @@ export const PostDescription = ({ user, content, timestamp }: Props) => (
         <div className="shrink-0">
             <NextImage
                 className="w-10 h-10 rounded-full object-cover"
-                src={user.photoUrl ? user.photoUrl : '/40x40-empty.png'}
+                src={user.photoUrl ? user.photoUrl : '/empty.png'}
                 width="40"
                 height="40"
                 alt="User avatar."

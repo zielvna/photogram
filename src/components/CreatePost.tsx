@@ -110,7 +110,7 @@ export const CreatePost = () => {
                         </div>
                         <NextImage
                             className="rounded-lg"
-                            src={preview ? preview : '/640x640-empty.png'}
+                            src={preview ? preview : '/empty.png'}
                             width="640"
                             height="640"
                             alt="Post image."

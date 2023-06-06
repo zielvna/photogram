@@ -24,7 +24,7 @@ export const Search = ({ isOpen, results, isLoading, closeSearch }: Props) => (
                 <div className="flex items-center cursor-pointer mt-2" onClick={closeSearch}>
                     <NextImage
                         className="rounded-full object-cover"
-                        src={result.photoUrl ? result.photoUrl : '/40x40-empty.png'}
+                        src={result.photoUrl ? result.photoUrl : '/empty.png'}
                         width="40"
                         height="40"
                         alt="User avatar."

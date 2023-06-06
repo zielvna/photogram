@@ -93,7 +93,7 @@ export const EditProfile = ({ user }: Props) => {
             return user.photoUrl;
         }
 
-        return '/40x40-empty.png';
+        return '/empty.png';
     };
 
     return (

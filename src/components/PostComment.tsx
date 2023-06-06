@@ -24,7 +24,7 @@ export const PostComment = ({ id, user, content, timestamp, addRemoveButton, com
             <div className="shrink-0">
                 <NextImage
                     className="w-10 h-10 rounded-full object-cover"
-                    src={user.photoUrl ? user.photoUrl : '/40.png'}
+                    src={user.photoUrl ? user.photoUrl : '/empty.png'}
                     width="40"
                     height="40"
                     alt="User avatar."

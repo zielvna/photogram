@@ -54,7 +54,7 @@ export const Profile = ({ user, posts }: Props) => {
             <div className="flex flex-col sm:flex-row">
                 <NextImage
                     className="w-40 h-40 rounded-full object-cover sm:mx-8"
-                    src={user.photoUrl ? user.photoUrl : '/160x160-empty.png'}
+                    src={user.photoUrl ? user.photoUrl : '/empty.png'}
                     width="160"
                     height="160"
                     alt="User avatar."

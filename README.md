@@ -13,14 +13,15 @@ This is a photo-based social media app inspired by Instagram. You can create pos
 | Firebase        | Backend & platform   |
 | Tailwind        | CSS                  |
 | React Hook Form | Forms                |
-| Zod             | Validation           |
-| Nookies         | Cookies              |
 | Vercel          | Deployment & hosting |
-| Moment          | Time conversion      |
-| Tailwind Merge  | Conditional styles   |
+| Figma           | UI & UX design       |
 | Yarn            | Package manager      |
 | Eslint          | Linter               |
 | Prettier        | Code formatter       |
+| Zod             | Validation           |
+| Nookies         | Cookies              |
+| Moment          | Time conversion      |
+| Tailwind Merge  | Conditional styles   |
 
 ## Preview 👀
 

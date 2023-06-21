@@ -9,14 +9,14 @@ This is a photo-based social media app inspired by Instagram. You can create pos
 | Tech            | Use                  |
 | --------------- | -------------------- |
 | Next            | Framework & SSR      |
-| Typescript      | Language             |
+| TypeScript      | Language             |
 | Firebase        | Backend & platform   |
 | Tailwind        | CSS                  |
 | React Hook Form | Forms                |
 | Vercel          | Deployment & hosting |
 | Figma           | UI & UX design       |
 | Yarn            | Package manager      |
-| Eslint          | Linter               |
+| ESLint          | Linter               |
 | Prettier        | Code formatter       |
 | Zod             | Validation           |
 | Nookies         | Cookies              |
